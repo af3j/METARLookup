@@ -1,0 +1,153 @@
+using System;
+using System.Diagnostics.Metrics;
+using System.Drawing.Printing;
+using System.Globalization;
+using System.Net;
+using System.Reflection.Emit;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
+namespace MetarLookup
+{
+    public partial class MetarForm : Form
+    {
+        public MetarForm()
+        {
+            InitializeComponent();
+
+        }
+
+
+        static async Task<Metar> GetMetarAsync(string airportCode)
+        {
+            // Use the HttpClient class to send an HTTP request to the NOAA Aviation Weather Center's web service
+            using (HttpClient client = new HttpClient())
+            {
+                Metar metar = new Metar();
+                metar.skyCondition = new List<SkyCondition>();
+                // Set the user agent and referrer headers
+                client.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Safari/537.36");
+                client.DefaultRequestHeaders.Add("referer", "https://www.aviationweather.gov/");
+
+                // Send a GET request to the web service's API endpoint
+                string url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&mostRecent=true&stationString=" + airportCode + " &hoursBeforeNow=3";
+                HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
+
+                // Read the response as a string
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                // Parse the XML response to extract the METAR weather report
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(responseString);
+                if (doc.DocumentElement.SelectNodes("/response/data/METAR") != null)
+                {
+                    XmlNodeList nodes = doc.DocumentElement.SelectNodes("/response/data/METAR");
+                    XmlNodeList skyConditions = doc.DocumentElement.SelectNodes("/response/data/METAR/sky_condition");
+                    foreach (XmlNode node in nodes)
+                    {
+
+                        metar.rawText = node.SelectSingleNode("raw_text").InnerText.ToString();
+                        metar.observationTime = node.SelectSingleNode("observation_time").InnerText.ToString();
+                        metar.stationID = node.SelectSingleNode("station_id").InnerText.ToString();
+                        metar.tempC = node.SelectSingleNode("temp_c").InnerText.ToString();
+                        metar.dewpointC = node.SelectSingleNode("dewpoint_c").InnerText.ToString();
+                        metar.windDir = node.SelectSingleNode("wind_dir_degrees").InnerText.ToString();
+                        metar.windSpeedKt = node.SelectSingleNode("wind_speed_kt").InnerText.ToString();
+                        metar.visibility = node.SelectSingleNode("visibility_statute_mi").InnerText.ToString();
+                        metar.flightCat = node.SelectSingleNode("flight_category").InnerText.ToString();
+                        metar.altimeter = Decimal.Round(Convert.ToDecimal(node.SelectSingleNode("altim_in_hg").InnerText), 2).ToString();
+                        foreach (XmlElement node2 in skyConditions)
+                        {
+                            SkyCondition condition = new SkyCondition();
+
+                            condition.skyCover = node2.GetAttribute("sky_cover").ToString();
+                            condition.cloudBase = node2.GetAttribute("cloud_base_ft_agl").ToString();
+                            metar.skyCondition.Add(condition);
+                        }
+
+
+                    }
+                }
+                return metar;
+            }
+        }
+
+
+
+
+        private void btnGetMetar_Click_1(object sender, EventArgs e)
+        {
+            clearBoxes();
+            Metar metar = new Metar();
+            // Get the airport code entered by the user
+            string airportCode = txtAirportCode.Text;
+
+            // Get the METAR weather report for the specified airport code
+            metar = GetMetarAsync(airportCode).Result;
+
+
+            // Display the METAR weather report
+            txtMetarReport.Text = metar.rawText;
+            txtID.Text = metar.stationID;
+            //txtDate.Text = metar.observationTime;
+            txtDate.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+            txtTime.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss");
+            txtTempC.Text = metar.tempC + "C";
+            txtDew.Text = metar.dewpointC + "C"; ;
+            txtDir.Text = metar.windDir;
+            txtSpeed.Text = metar.windSpeedKt + "kt";
+            txtVis.Text = metar.visibility + "sm";
+            txtAlt.Text = metar.altimeter;
+
+            foreach(SkyCondition condition in metar.skyCondition)
+            {
+                if (condition.skyCover != "CLR")
+                {
+                    txtSkyConditions.AppendText(condition.skyCover + " at " + condition.cloudBase + System.Environment.NewLine);
+                }
+                else
+                {
+                    txtSkyConditions.AppendText(condition.skyCover + System.Environment.NewLine);
+                }
+            }
+
+            lblCat.Text = metar.flightCat;
+            lblCat.Visible = true;
+            if(metar.flightCat == "VFR")
+            {
+                lblCat.ForeColor = System.Drawing.Color.Green;
+            }
+            else if (metar.flightCat == "MVFR")
+            {
+                lblCat.ForeColor = System.Drawing.Color.Orange;
+            }
+            else
+            {
+                lblCat.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        public void clearBoxes()
+        {
+            txtSkyConditions.Clear();
+        }
+        
+    }
+}
