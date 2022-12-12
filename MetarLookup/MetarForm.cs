@@ -91,9 +91,11 @@ namespace MetarLookup
             // Display the METAR weather report
             txtMetarReport.Text = metar.rawText;
             txtID.Text = metar.stationID;
-            //txtDate.Text = metar.observationTime;
-            txtDate.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
-            txtTime.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss");
+            if (metar.observationTime != null)
+            {
+                txtDate.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+                txtTime.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss");
+            }
             txtTempC.Text = metar.tempC + "C";
             txtDew.Text = metar.dewpointC + "C"; ;
             txtDir.Text = metar.windDir;

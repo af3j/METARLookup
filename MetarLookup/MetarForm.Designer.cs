@@ -55,6 +55,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.txtSkyConditions = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtAirportCode
@@ -63,6 +64,7 @@
             this.txtAirportCode.Name = "txtAirportCode";
             this.txtAirportCode.Size = new System.Drawing.Size(100, 23);
             this.txtAirportCode.TabIndex = 0;
+            this.txtAirportCode.Text = "enter airport code";
             // 
             // btnGetMetar
             // 
@@ -293,12 +295,22 @@
             this.label11.TabIndex = 26;
             this.label11.Text = "Sky Conditions";
             // 
-            // Form1
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(392, 304);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(40, 15);
+            this.label12.TabIndex = 27;
+            this.label12.Text = "v.1.0.0";
+            // 
+            // MetarForm
             // 
             this.AcceptButton = this.btnGetMetar;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 313);
+            this.ClientSize = new System.Drawing.Size(444, 323);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.txtSkyConditions);
             this.Controls.Add(this.label10);
@@ -324,7 +336,7 @@
             this.Controls.Add(this.txtMetarReport);
             this.Controls.Add(this.btnGetMetar);
             this.Controls.Add(this.txtAirportCode);
-            this.Name = "Form1";
+            this.Name = "MetarForm";
             this.Text = "Metar Lookup";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -359,5 +371,6 @@
         private Label label10;
         private TextBox txtSkyConditions;
         private Label label11;
+        private Label label12;
     }
 }
