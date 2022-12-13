@@ -17,9 +17,11 @@ namespace MetarLookup
         public string dewpointC { get; set; }
         public string windDir { get; set; }
         public string windSpeedKt { get; set; }
+        public string windGustsKt { get; set; }
         public string visibility { get; set; }
         public string altimeter { get; set; }
         public string flightCat { get; set; }
+        public string elevationMeter { get; set; }
         public List<SkyCondition> skyCondition { get; set; }
     }
     internal class SkyCondition

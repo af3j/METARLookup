@@ -53,10 +53,25 @@ namespace MetarLookup
                         metar.stationID = node.SelectSingleNode("station_id").InnerText.ToString();
                         metar.tempC = node.SelectSingleNode("temp_c").InnerText.ToString();
                         metar.dewpointC = node.SelectSingleNode("dewpoint_c").InnerText.ToString();
-                        metar.windDir = node.SelectSingleNode("wind_dir_degrees").InnerText.ToString();
-                        metar.windSpeedKt = node.SelectSingleNode("wind_speed_kt").InnerText.ToString();
+                        if (node.SelectSingleNode("wind_dir_degrees") != null)
+                        {
+                            metar.windDir = node.SelectSingleNode("wind_dir_degrees").InnerText.ToString() + "°";
+                        }
+                        if (node.SelectSingleNode("wind_speed_kt") != null)
+                        {
+                            metar.windSpeedKt = node.SelectSingleNode("wind_speed_kt").InnerText.ToString();
+                        }
+                        if (node.SelectSingleNode("wind_gust_kt") != null)
+                        {
+                            metar.windGustsKt = node.SelectSingleNode("wind_gust_kt").InnerText.ToString();
+                        }
+                        else
+                        {
+                            metar.windGustsKt = "0";
+                        }
                         metar.visibility = node.SelectSingleNode("visibility_statute_mi").InnerText.ToString();
                         metar.flightCat = node.SelectSingleNode("flight_category").InnerText.ToString();
+                        metar.elevationMeter = node.SelectSingleNode("elevation_m").InnerText.ToString();
                         metar.altimeter = Decimal.Round(Convert.ToDecimal(node.SelectSingleNode("altim_in_hg").InnerText), 2).ToString();
                         foreach (XmlElement node2 in skyConditions)
                         {
@@ -100,10 +115,12 @@ namespace MetarLookup
             txtDew.Text = metar.dewpointC + "C"; ;
             txtDir.Text = metar.windDir;
             txtSpeed.Text = metar.windSpeedKt + "kt";
+            txtGusts.Text = metar.windGustsKt + "kt";
             txtVis.Text = metar.visibility + "sm";
             txtAlt.Text = metar.altimeter;
-
-            foreach(SkyCondition condition in metar.skyCondition)
+            txtElevMeter.Text = metar.elevationMeter + 'm';
+            txtElevFeet.Text = Convert.ToInt32((Convert.ToDouble(metar.elevationMeter)* 3.28084)).ToString() + "ft";
+            foreach (SkyCondition condition in metar.skyCondition)
             {
                 if (condition.skyCover != "CLR")
                 {

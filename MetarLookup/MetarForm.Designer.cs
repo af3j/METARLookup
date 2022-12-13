@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MetarForm));
             this.txtAirportCode = new System.Windows.Forms.TextBox();
             this.btnGetMetar = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -56,15 +57,21 @@
             this.txtSkyConditions = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.txtGusts = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txtElevFeet = new System.Windows.Forms.TextBox();
+            this.txtElevMeter = new System.Windows.Forms.TextBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtAirportCode
             // 
             this.txtAirportCode.Location = new System.Drawing.Point(12, 12);
             this.txtAirportCode.Name = "txtAirportCode";
+            this.txtAirportCode.PlaceholderText = "Airport Code";
             this.txtAirportCode.Size = new System.Drawing.Size(100, 23);
             this.txtAirportCode.TabIndex = 0;
-            this.txtAirportCode.Text = "enter airport code";
             // 
             // btnGetMetar
             // 
@@ -103,16 +110,16 @@
             // txtID
             // 
             this.txtID.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtID.Location = new System.Drawing.Point(67, 142);
+            this.txtID.Location = new System.Drawing.Point(87, 142);
             this.txtID.Name = "txtID";
             this.txtID.ReadOnly = true;
-            this.txtID.Size = new System.Drawing.Size(66, 23);
+            this.txtID.Size = new System.Drawing.Size(40, 23);
             this.txtID.TabIndex = 5;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 150);
+            this.label2.Location = new System.Drawing.Point(17, 145);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(18, 15);
             this.label2.TabIndex = 6;
@@ -122,7 +129,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 174);
+            this.label3.Location = new System.Drawing.Point(15, 174);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 15);
             this.label3.TabIndex = 8;
@@ -142,7 +149,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 203);
+            this.label4.Location = new System.Drawing.Point(15, 203);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(98, 15);
             this.label4.TabIndex = 10;
@@ -151,7 +158,7 @@
             // txtTempC
             // 
             this.txtTempC.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtTempC.Location = new System.Drawing.Point(149, 200);
+            this.txtTempC.Location = new System.Drawing.Point(162, 200);
             this.txtTempC.Name = "txtTempC";
             this.txtTempC.ReadOnly = true;
             this.txtTempC.Size = new System.Drawing.Size(44, 23);
@@ -160,7 +167,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(192, 203);
+            this.label5.Location = new System.Drawing.Point(203, 203);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(12, 15);
             this.label5.TabIndex = 11;
@@ -169,7 +176,7 @@
             // txtDew
             // 
             this.txtDew.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtDew.Location = new System.Drawing.Point(201, 199);
+            this.txtDew.Location = new System.Drawing.Point(212, 199);
             this.txtDew.Name = "txtDew";
             this.txtDew.ReadOnly = true;
             this.txtDew.Size = new System.Drawing.Size(44, 23);
@@ -180,14 +187,14 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(16, 231);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(129, 15);
+            this.label6.Size = new System.Drawing.Size(136, 15);
             this.label6.TabIndex = 13;
-            this.label6.Text = "Wind Direction / Speed";
+            this.label6.Text = "Wind Dir / Speed / Gusts";
             // 
             // txtSpeed
             // 
             this.txtSpeed.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtSpeed.Location = new System.Drawing.Point(191, 228);
+            this.txtSpeed.Location = new System.Drawing.Point(202, 228);
             this.txtSpeed.Name = "txtSpeed";
             this.txtSpeed.ReadOnly = true;
             this.txtSpeed.Size = new System.Drawing.Size(33, 23);
@@ -196,7 +203,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(181, 231);
+            this.label7.Location = new System.Drawing.Point(193, 231);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(12, 15);
             this.label7.TabIndex = 15;
@@ -205,7 +212,7 @@
             // txtDir
             // 
             this.txtDir.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtDir.Location = new System.Drawing.Point(149, 228);
+            this.txtDir.Location = new System.Drawing.Point(162, 228);
             this.txtDir.Name = "txtDir";
             this.txtDir.ReadOnly = true;
             this.txtDir.Size = new System.Drawing.Size(33, 23);
@@ -214,7 +221,7 @@
             // txtVis
             // 
             this.txtVis.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtVis.Location = new System.Drawing.Point(75, 251);
+            this.txtVis.Location = new System.Drawing.Point(87, 258);
             this.txtVis.Name = "txtVis";
             this.txtVis.ReadOnly = true;
             this.txtVis.Size = new System.Drawing.Size(58, 23);
@@ -223,7 +230,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(16, 254);
+            this.label8.Location = new System.Drawing.Point(16, 261);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(51, 15);
             this.label8.TabIndex = 17;
@@ -232,7 +239,7 @@
             // txtAlt
             // 
             this.txtAlt.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtAlt.Location = new System.Drawing.Point(75, 279);
+            this.txtAlt.Location = new System.Drawing.Point(87, 286);
             this.txtAlt.Name = "txtAlt";
             this.txtAlt.ReadOnly = true;
             this.txtAlt.Size = new System.Drawing.Size(58, 23);
@@ -241,7 +248,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(18, 282);
+            this.label9.Location = new System.Drawing.Point(16, 289);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(56, 15);
             this.label9.TabIndex = 19;
@@ -261,7 +268,7 @@
             // txtTime
             // 
             this.txtTime.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtTime.Location = new System.Drawing.Point(182, 171);
+            this.txtTime.Location = new System.Drawing.Point(181, 171);
             this.txtTime.Name = "txtTime";
             this.txtTime.ReadOnly = true;
             this.txtTime.Size = new System.Drawing.Size(88, 23);
@@ -298,18 +305,78 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(392, 304);
+            this.label12.Location = new System.Drawing.Point(392, 337);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(40, 15);
             this.label12.TabIndex = 27;
-            this.label12.Text = "v.1.0.0";
+            this.label12.Text = "v.1.0.1";
+            // 
+            // txtGusts
+            // 
+            this.txtGusts.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtGusts.Location = new System.Drawing.Point(244, 228);
+            this.txtGusts.Name = "txtGusts";
+            this.txtGusts.ReadOnly = true;
+            this.txtGusts.Size = new System.Drawing.Size(33, 23);
+            this.txtGusts.TabIndex = 28;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(234, 231);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(12, 15);
+            this.label13.TabIndex = 29;
+            this.label13.Text = "/";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(17, 318);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(55, 15);
+            this.label14.TabIndex = 30;
+            this.label14.Text = "Elevation";
+            // 
+            // txtElevFeet
+            // 
+            this.txtElevFeet.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtElevFeet.Location = new System.Drawing.Point(87, 315);
+            this.txtElevFeet.Name = "txtElevFeet";
+            this.txtElevFeet.ReadOnly = true;
+            this.txtElevFeet.Size = new System.Drawing.Size(58, 23);
+            this.txtElevFeet.TabIndex = 31;
+            // 
+            // txtElevMeter
+            // 
+            this.txtElevMeter.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtElevMeter.Location = new System.Drawing.Point(156, 315);
+            this.txtElevMeter.Name = "txtElevMeter";
+            this.txtElevMeter.ReadOnly = true;
+            this.txtElevMeter.Size = new System.Drawing.Size(59, 23);
+            this.txtElevMeter.TabIndex = 32;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(145, 318);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(12, 15);
+            this.label15.TabIndex = 33;
+            this.label15.Text = "/";
             // 
             // MetarForm
             // 
             this.AcceptButton = this.btnGetMetar;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 323);
+            this.ClientSize = new System.Drawing.Size(444, 357);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.txtElevMeter);
+            this.Controls.Add(this.txtElevFeet);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.txtGusts);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.txtSkyConditions);
@@ -336,6 +403,7 @@
             this.Controls.Add(this.txtMetarReport);
             this.Controls.Add(this.btnGetMetar);
             this.Controls.Add(this.txtAirportCode);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MetarForm";
             this.Text = "Metar Lookup";
             this.ResumeLayout(false);
@@ -372,5 +440,11 @@
         private TextBox txtSkyConditions;
         private Label label11;
         private Label label12;
+        private TextBox txtGusts;
+        private Label label13;
+        private Label label14;
+        private TextBox txtElevFeet;
+        private TextBox txtElevMeter;
+        private Label label15;
     }
 }
