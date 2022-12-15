@@ -49,7 +49,7 @@
             this.txtDir = new System.Windows.Forms.TextBox();
             this.txtVis = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.txtAlt = new System.Windows.Forms.TextBox();
+            this.txtAltInHg = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.lblCat = new System.Windows.Forms.Label();
             this.txtTime = new System.Windows.Forms.TextBox();
@@ -63,6 +63,10 @@
             this.txtElevFeet = new System.Windows.Forms.TextBox();
             this.txtElevMeter = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtAltQNH = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.txtName = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // txtAirportCode
@@ -110,7 +114,7 @@
             // txtID
             // 
             this.txtID.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtID.Location = new System.Drawing.Point(87, 142);
+            this.txtID.Location = new System.Drawing.Point(32, 38);
             this.txtID.Name = "txtID";
             this.txtID.ReadOnly = true;
             this.txtID.Size = new System.Drawing.Size(40, 23);
@@ -119,7 +123,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(17, 145);
+            this.label2.Location = new System.Drawing.Point(12, 41);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(18, 15);
             this.label2.TabIndex = 6;
@@ -236,14 +240,14 @@
             this.label8.TabIndex = 17;
             this.label8.Text = "Visibility";
             // 
-            // txtAlt
+            // txtAltInHg
             // 
-            this.txtAlt.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtAlt.Location = new System.Drawing.Point(87, 286);
-            this.txtAlt.Name = "txtAlt";
-            this.txtAlt.ReadOnly = true;
-            this.txtAlt.Size = new System.Drawing.Size(58, 23);
-            this.txtAlt.TabIndex = 20;
+            this.txtAltInHg.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtAltInHg.Location = new System.Drawing.Point(87, 286);
+            this.txtAltInHg.Name = "txtAltInHg";
+            this.txtAltInHg.ReadOnly = true;
+            this.txtAltInHg.Size = new System.Drawing.Size(65, 23);
+            this.txtAltInHg.TabIndex = 20;
             // 
             // label9
             // 
@@ -286,7 +290,7 @@
             // txtSkyConditions
             // 
             this.txtSkyConditions.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtSkyConditions.Location = new System.Drawing.Point(306, 171);
+            this.txtSkyConditions.Location = new System.Drawing.Point(306, 202);
             this.txtSkyConditions.Multiline = true;
             this.txtSkyConditions.Name = "txtSkyConditions";
             this.txtSkyConditions.ReadOnly = true;
@@ -296,7 +300,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(306, 150);
+            this.label11.Location = new System.Drawing.Point(306, 184);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(86, 15);
             this.label11.TabIndex = 26;
@@ -309,7 +313,7 @@
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(40, 15);
             this.label12.TabIndex = 27;
-            this.label12.Text = "v.1.0.1";
+            this.label12.Text = "v.1.0.2";
             // 
             // txtGusts
             // 
@@ -365,12 +369,52 @@
             this.label15.TabIndex = 33;
             this.label15.Text = "/";
             // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(151, 289);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(12, 15);
+            this.label16.TabIndex = 34;
+            this.label16.Text = "/";
+            // 
+            // txtAltQNH
+            // 
+            this.txtAltQNH.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtAltQNH.Location = new System.Drawing.Point(160, 286);
+            this.txtAltQNH.Name = "txtAltQNH";
+            this.txtAltQNH.ReadOnly = true;
+            this.txtAltQNH.Size = new System.Drawing.Size(65, 23);
+            this.txtAltQNH.TabIndex = 35;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(15, 145);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(39, 15);
+            this.label17.TabIndex = 36;
+            this.label17.Text = "Name";
+            // 
+            // txtName
+            // 
+            this.txtName.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtName.Location = new System.Drawing.Point(56, 142);
+            this.txtName.Name = "txtName";
+            this.txtName.ReadOnly = true;
+            this.txtName.Size = new System.Drawing.Size(376, 23);
+            this.txtName.TabIndex = 37;
+            // 
             // MetarForm
             // 
             this.AcceptButton = this.btnGetMetar;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(444, 357);
+            this.Controls.Add(this.txtName);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.txtAltQNH);
+            this.Controls.Add(this.label16);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.txtElevMeter);
             this.Controls.Add(this.txtElevFeet);
@@ -383,7 +427,7 @@
             this.Controls.Add(this.label10);
             this.Controls.Add(this.txtTime);
             this.Controls.Add(this.lblCat);
-            this.Controls.Add(this.txtAlt);
+            this.Controls.Add(this.txtAltInHg);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.txtVis);
             this.Controls.Add(this.label8);
@@ -432,7 +476,7 @@
         private TextBox txtDir;
         private TextBox txtVis;
         private Label label8;
-        private TextBox txtAlt;
+        private TextBox txtAltInHg;
         private Label label9;
         private Label lblCat;
         private TextBox txtTime;
@@ -446,5 +490,9 @@
         private TextBox txtElevFeet;
         private TextBox txtElevMeter;
         private Label label15;
+        private Label label16;
+        private TextBox txtAltQNH;
+        private Label label17;
+        private TextBox txtName;
     }
 }
