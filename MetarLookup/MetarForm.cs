@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics.Metrics;
 using System.Drawing.Printing;
@@ -100,8 +101,20 @@ namespace MetarLookup
             string airportCode = txtAirportCode.Text;
 
             // Get the METAR weather report for the specified airport code
+            try 
+            { 
             metar = GetMetarAsync(airportCode).Result;
-
+            }
+            catch (Exception ex) 
+            { 
+            }
+            try
+            {
+                getAirportNameAsync(airportCode);
+            }
+            catch (Exception ex) 
+            { 
+            }
 
             // Display the METAR weather report
             txtMetarReport.Text = metar.rawText;
@@ -109,20 +122,21 @@ namespace MetarLookup
             if (metar.observationTime != null)
             {
                 txtDate.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
-                txtTime.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss");
+                txtTime.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss") + " Z";
             }
-            txtTempC.Text = metar.tempC + "C";
-            txtDew.Text = metar.dewpointC + "C"; ;
+            txtTempC.Text = metar.tempC + " C";
+            txtDew.Text = metar.dewpointC + " C"; ;
             txtDir.Text = metar.windDir;
-            txtSpeed.Text = metar.windSpeedKt + "kt";
-            txtGusts.Text = metar.windGustsKt + "kt";
-            txtVis.Text = metar.visibility + "sm";
-            txtAlt.Text = metar.altimeter;
-            txtElevMeter.Text = metar.elevationMeter + 'm';
-            txtElevFeet.Text = Convert.ToInt32((Convert.ToDouble(metar.elevationMeter)* 3.28084)).ToString() + "ft";
+            txtSpeed.Text = metar.windSpeedKt + " kt";
+            txtGusts.Text = metar.windGustsKt + " kt";
+            txtVis.Text = metar.visibility + " sm";
+            txtAltInHg.Text = metar.altimeter + " inHg";
+            txtAltQNH.Text = Math.Round((Convert.ToDouble(metar.altimeter) * 33.8639)).ToString() + " QNH";
+            txtElevMeter.Text = metar.elevationMeter + " m";
+            txtElevFeet.Text = Convert.ToInt32((Convert.ToDouble(metar.elevationMeter) * 3.28084)).ToString() + " ft";
             foreach (SkyCondition condition in metar.skyCondition)
             {
-                if (condition.skyCover != "CLR")
+                if (condition.skyCover != "CLR" && condition.skyCover != "CAVOK")
                 {
                     txtSkyConditions.AppendText(condition.skyCover + " at " + condition.cloudBase + System.Environment.NewLine);
                 }
@@ -134,7 +148,7 @@ namespace MetarLookup
 
             lblCat.Text = metar.flightCat;
             lblCat.Visible = true;
-            if(metar.flightCat == "VFR")
+            if (metar.flightCat == "VFR")
             {
                 lblCat.ForeColor = System.Drawing.Color.Green;
             }
@@ -145,6 +159,28 @@ namespace MetarLookup
             else
             {
                 lblCat.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        public async Task getAirportNameAsync(string code)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://airport-info.p.rapidapi.com/airport?icao=" + code),
+                Headers =
+                        {
+                            { "X-RapidAPI-Key", "5a0f13e2cemsh82c55bdc6480488p16ecf0jsn71e3a74d3d2e" },
+                            { "X-RapidAPI-Host", "airport-info.p.rapidapi.com" },
+                        },
+            };
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                Airport airport = JsonConvert.DeserializeObject<Airport>(body);
+                txtName.Text = airport.name;
             }
         }
 
@@ -167,6 +203,9 @@ namespace MetarLookup
         {
             txtSkyConditions.Clear();
         }
-        
+
     }
+
+    
+
 }
