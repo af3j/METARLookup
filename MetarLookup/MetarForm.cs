@@ -115,6 +115,14 @@ namespace MetarLookup
             catch (Exception ex) 
             { 
             }
+            try
+            {
+                getAirportATIS(airportCode);
+            }
+            catch
+            {
+
+            }
 
             // Display the METAR weather report
             txtMetarReport.Text = metar.rawText;
@@ -184,6 +192,52 @@ namespace MetarLookup
             }
         }
 
+        public async Task getAirportATIS(string code)
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://datis.clowd.io/api/" + code),   
+            };
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                if (body.Contains("error"))
+                {
+                    txtArrivalAtis.Text = "ATIS is not available";
+                    txtDepartureAtis.Text = "ATIS is not available";
+                }
+                else
+                {
+                    ATIS[] atis = JsonConvert.DeserializeObject<ATIS[]>(body);
+
+                    if (atis[0].type == "arr")
+                    {
+                        txtArrivalAtis.Text = atis[0].datis;
+                    }
+                    else if (atis[0].type == "dep")
+                    {
+                        txtDepartureAtis.Text = atis[0].datis;
+                    }
+                    else if (atis[0].type == "combined")
+                    {
+                        txtArrivalAtis.Text = "***COMBINED ATIS***" + Environment.NewLine + atis[0].datis;
+                    }
+                    if (atis[1].type == "arr")
+                    {
+                        txtArrivalAtis.Text = atis[1].datis;
+                    }
+                    else if (atis[1].type == "dep")
+                    {
+                        txtDepartureAtis.Text = atis[1].datis;
+                    }
+                }
+                
+            }
+        }
+
         private void label2_Click(object sender, EventArgs e)
         {
 
@@ -202,6 +256,8 @@ namespace MetarLookup
         public void clearBoxes()
         {
             txtSkyConditions.Clear();
+            txtArrivalAtis.Clear();
+            txtDepartureAtis.Clear();
         }
 
     }
