@@ -1,14 +1,7 @@
 using Newtonsoft.Json;
-using System;
-using System.Diagnostics.Metrics;
-using System.Drawing.Printing;
 using System.Globalization;
-using System.Net;
-using System.Reflection.Emit;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using System.Xml;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 
 namespace MetarLookup
 {
@@ -73,7 +66,14 @@ namespace MetarLookup
                         metar.visibility = node.SelectSingleNode("visibility_statute_mi").InnerText.ToString();
                         metar.flightCat = node.SelectSingleNode("flight_category").InnerText.ToString();
                         metar.elevationMeter = node.SelectSingleNode("elevation_m").InnerText.ToString();
+
                         metar.altimeter = Decimal.Round(Convert.ToDecimal(node.SelectSingleNode("altim_in_hg").InnerText), 2).ToString();
+
+
+
+
+
+
                         foreach (XmlElement node2 in skyConditions)
                         {
                             SkyCondition condition = new SkyCondition();
