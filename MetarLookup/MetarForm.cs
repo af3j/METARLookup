@@ -142,15 +142,18 @@ namespace MetarLookup
             txtAltQNH.Text = Math.Round((Convert.ToDouble(metar.altimeter) * 33.8639)).ToString() + " QNH";
             txtElevMeter.Text = metar.elevationMeter + " m";
             txtElevFeet.Text = Convert.ToInt32((Convert.ToDouble(metar.elevationMeter) * 3.28084)).ToString() + " ft";
-            foreach (SkyCondition condition in metar.skyCondition)
+            if (metar.skyCondition != null)
             {
-                if (condition.skyCover != "CLR" && condition.skyCover != "CAVOK")
+                foreach (SkyCondition condition in metar.skyCondition)
                 {
-                    txtSkyConditions.AppendText(condition.skyCover + " at " + condition.cloudBase + System.Environment.NewLine);
-                }
-                else
-                {
-                    txtSkyConditions.AppendText(condition.skyCover + System.Environment.NewLine);
+                    if (condition.skyCover != "CLR" && condition.skyCover != "CAVOK")
+                    {
+                        txtSkyConditions.AppendText(condition.skyCover + " at " + condition.cloudBase + System.Environment.NewLine);
+                    }
+                    else
+                    {
+                        txtSkyConditions.AppendText(condition.skyCover + System.Environment.NewLine);
+                    }
                 }
             }
 
