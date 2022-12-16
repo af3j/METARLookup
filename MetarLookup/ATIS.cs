@@ -10,8 +10,7 @@ namespace MetarLookup
   
 
     public class ATIS
-    {
-        public string error { get; set; }   
+    { 
         public string airport { get; set; }
         public string type { get; set; }
         public string datis { get; set; }
