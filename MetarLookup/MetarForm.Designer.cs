@@ -107,7 +107,7 @@
             this.txtMetarReport.Multiline = true;
             this.txtMetarReport.Name = "txtMetarReport";
             this.txtMetarReport.ReadOnly = true;
-            this.txtMetarReport.Size = new System.Drawing.Size(421, 41);
+            this.txtMetarReport.Size = new System.Drawing.Size(421, 63);
             this.txtMetarReport.TabIndex = 3;
             // 
             // label1
@@ -136,32 +136,29 @@
             this.label2.Size = new System.Drawing.Size(35, 15);
             this.label2.TabIndex = 6;
             this.label2.Text = "ICAO";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 423);
+            this.label3.Location = new System.Drawing.Point(12, 445);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 15);
             this.label3.TabIndex = 8;
             this.label3.Text = "Date / Time";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // txtDate
             // 
             this.txtDate.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtDate.Location = new System.Drawing.Point(84, 420);
+            this.txtDate.Location = new System.Drawing.Point(84, 442);
             this.txtDate.Name = "txtDate";
             this.txtDate.ReadOnly = true;
             this.txtDate.Size = new System.Drawing.Size(88, 23);
             this.txtDate.TabIndex = 7;
-            this.txtDate.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 452);
+            this.label4.Location = new System.Drawing.Point(12, 474);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(98, 15);
             this.label4.TabIndex = 10;
@@ -170,7 +167,7 @@
             // txtTempC
             // 
             this.txtTempC.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtTempC.Location = new System.Drawing.Point(159, 449);
+            this.txtTempC.Location = new System.Drawing.Point(159, 471);
             this.txtTempC.Name = "txtTempC";
             this.txtTempC.ReadOnly = true;
             this.txtTempC.Size = new System.Drawing.Size(44, 23);
@@ -179,7 +176,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(209, 452);
+            this.label5.Location = new System.Drawing.Point(209, 474);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(12, 15);
             this.label5.TabIndex = 11;
@@ -188,7 +185,7 @@
             // txtDew
             // 
             this.txtDew.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtDew.Location = new System.Drawing.Point(225, 448);
+            this.txtDew.Location = new System.Drawing.Point(225, 470);
             this.txtDew.Name = "txtDew";
             this.txtDew.ReadOnly = true;
             this.txtDew.Size = new System.Drawing.Size(44, 23);
@@ -197,7 +194,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 480);
+            this.label6.Location = new System.Drawing.Point(13, 502);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(136, 15);
             this.label6.TabIndex = 13;
@@ -206,7 +203,7 @@
             // txtSpeed
             // 
             this.txtSpeed.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtSpeed.Location = new System.Drawing.Point(215, 477);
+            this.txtSpeed.Location = new System.Drawing.Point(215, 499);
             this.txtSpeed.Name = "txtSpeed";
             this.txtSpeed.ReadOnly = true;
             this.txtSpeed.Size = new System.Drawing.Size(33, 23);
@@ -215,7 +212,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(198, 480);
+            this.label7.Location = new System.Drawing.Point(198, 502);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(12, 15);
             this.label7.TabIndex = 15;
@@ -224,7 +221,7 @@
             // txtDir
             // 
             this.txtDir.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtDir.Location = new System.Drawing.Point(159, 477);
+            this.txtDir.Location = new System.Drawing.Point(159, 499);
             this.txtDir.Name = "txtDir";
             this.txtDir.ReadOnly = true;
             this.txtDir.Size = new System.Drawing.Size(33, 23);
@@ -233,7 +230,7 @@
             // txtVis
             // 
             this.txtVis.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtVis.Location = new System.Drawing.Point(84, 507);
+            this.txtVis.Location = new System.Drawing.Point(84, 529);
             this.txtVis.Name = "txtVis";
             this.txtVis.ReadOnly = true;
             this.txtVis.Size = new System.Drawing.Size(58, 23);
@@ -242,7 +239,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(13, 510);
+            this.label8.Location = new System.Drawing.Point(13, 532);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(51, 15);
             this.label8.TabIndex = 17;
@@ -251,7 +248,7 @@
             // txtAltInHg
             // 
             this.txtAltInHg.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtAltInHg.Location = new System.Drawing.Point(84, 535);
+            this.txtAltInHg.Location = new System.Drawing.Point(84, 557);
             this.txtAltInHg.Name = "txtAltInHg";
             this.txtAltInHg.ReadOnly = true;
             this.txtAltInHg.Size = new System.Drawing.Size(65, 23);
@@ -260,7 +257,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(13, 538);
+            this.label9.Location = new System.Drawing.Point(13, 560);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(56, 15);
             this.label9.TabIndex = 19;
@@ -280,7 +277,7 @@
             // txtTime
             // 
             this.txtTime.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtTime.Location = new System.Drawing.Point(194, 420);
+            this.txtTime.Location = new System.Drawing.Point(194, 442);
             this.txtTime.Name = "txtTime";
             this.txtTime.ReadOnly = true;
             this.txtTime.Size = new System.Drawing.Size(88, 23);
@@ -289,7 +286,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(178, 423);
+            this.label10.Location = new System.Drawing.Point(178, 445);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(12, 15);
             this.label10.TabIndex = 24;
@@ -298,7 +295,7 @@
             // txtSkyConditions
             // 
             this.txtSkyConditions.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtSkyConditions.Location = new System.Drawing.Point(310, 451);
+            this.txtSkyConditions.Location = new System.Drawing.Point(310, 473);
             this.txtSkyConditions.Multiline = true;
             this.txtSkyConditions.Name = "txtSkyConditions";
             this.txtSkyConditions.ReadOnly = true;
@@ -308,7 +305,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(309, 433);
+            this.label11.Location = new System.Drawing.Point(309, 455);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(86, 15);
             this.label11.TabIndex = 26;
@@ -317,7 +314,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(389, 586);
+            this.label12.Location = new System.Drawing.Point(389, 608);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(40, 15);
             this.label12.TabIndex = 27;
@@ -326,7 +323,7 @@
             // txtGusts
             // 
             this.txtGusts.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtGusts.Location = new System.Drawing.Point(272, 477);
+            this.txtGusts.Location = new System.Drawing.Point(272, 499);
             this.txtGusts.Name = "txtGusts";
             this.txtGusts.ReadOnly = true;
             this.txtGusts.Size = new System.Drawing.Size(33, 23);
@@ -335,7 +332,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(255, 480);
+            this.label13.Location = new System.Drawing.Point(255, 502);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(12, 15);
             this.label13.TabIndex = 29;
@@ -344,7 +341,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(14, 567);
+            this.label14.Location = new System.Drawing.Point(14, 589);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(55, 15);
             this.label14.TabIndex = 30;
@@ -353,7 +350,7 @@
             // txtElevFeet
             // 
             this.txtElevFeet.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtElevFeet.Location = new System.Drawing.Point(84, 564);
+            this.txtElevFeet.Location = new System.Drawing.Point(84, 586);
             this.txtElevFeet.Name = "txtElevFeet";
             this.txtElevFeet.ReadOnly = true;
             this.txtElevFeet.Size = new System.Drawing.Size(58, 23);
@@ -362,7 +359,7 @@
             // txtElevMeter
             // 
             this.txtElevMeter.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtElevMeter.Location = new System.Drawing.Point(162, 564);
+            this.txtElevMeter.Location = new System.Drawing.Point(162, 586);
             this.txtElevMeter.Name = "txtElevMeter";
             this.txtElevMeter.ReadOnly = true;
             this.txtElevMeter.Size = new System.Drawing.Size(59, 23);
@@ -371,7 +368,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(147, 567);
+            this.label15.Location = new System.Drawing.Point(147, 589);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(12, 15);
             this.label15.TabIndex = 33;
@@ -380,7 +377,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(154, 538);
+            this.label16.Location = new System.Drawing.Point(154, 560);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(12, 15);
             this.label16.TabIndex = 34;
@@ -389,7 +386,7 @@
             // txtAltQNH
             // 
             this.txtAltQNH.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtAltQNH.Location = new System.Drawing.Point(170, 535);
+            this.txtAltQNH.Location = new System.Drawing.Point(170, 557);
             this.txtAltQNH.Name = "txtAltQNH";
             this.txtAltQNH.ReadOnly = true;
             this.txtAltQNH.Size = new System.Drawing.Size(65, 23);
@@ -417,7 +414,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabArrivalAtis);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(12, 159);
+            this.tabControl1.Location = new System.Drawing.Point(12, 181);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -471,7 +468,7 @@
             this.AcceptButton = this.btnGetMetar;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 605);
+            this.ClientSize = new System.Drawing.Size(444, 626);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.label17);

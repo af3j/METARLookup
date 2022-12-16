@@ -93,7 +93,7 @@ namespace MetarLookup
 
 
 
-        private void btnGetMetar_Click_1(object sender, EventArgs e)
+        private async void btnGetMetar_Click_1(object sender, EventArgs e)
         {
             clearBoxes();
             Metar metar = new Metar();
@@ -110,14 +110,14 @@ namespace MetarLookup
             }
             try
             {
-                getAirportNameAsync(airportCode);
+                await getAirportNameAsync(airportCode);
             }
             catch (Exception ex) 
             { 
             }
             try
             {
-                getAirportATIS(airportCode);
+                await getAirportATIS(airportCode);
             }
             catch
             {
@@ -238,20 +238,9 @@ namespace MetarLookup
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
+        
 
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+        
 
         public void clearBoxes()
         {
