@@ -318,7 +318,7 @@
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(40, 15);
             this.label12.TabIndex = 27;
-            this.label12.Text = "v.1.1.1";
+            this.label12.Text = "v.1.1.3";
             // 
             // txtGusts
             // 

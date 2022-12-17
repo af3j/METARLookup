@@ -10,6 +10,8 @@ namespace MetarLookup
         public MetarForm()
         {
             InitializeComponent();
+            CultureInfo culture = new CultureInfo("en-US");
+            CultureInfo.CurrentCulture = culture;
 
         }
 
@@ -67,7 +69,7 @@ namespace MetarLookup
                         metar.flightCat = node.SelectSingleNode("flight_category").InnerText.ToString();
                         metar.elevationMeter = node.SelectSingleNode("elevation_m").InnerText.ToString();
 
-                        metar.altimeter = Decimal.Round(Convert.ToDecimal(node.SelectSingleNode("altim_in_hg").InnerText), 2).ToString();
+                        metar.altimeter = node.SelectSingleNode("altim_in_hg").InnerText.ToString();
 
 
 
@@ -138,10 +140,10 @@ namespace MetarLookup
             txtSpeed.Text = metar.windSpeedKt + " kt";
             txtGusts.Text = metar.windGustsKt + " kt";
             txtVis.Text = metar.visibility + " sm";
-            txtAltInHg.Text = metar.altimeter + " inHg";
-            txtAltQNH.Text = Math.Round((Convert.ToDouble(metar.altimeter) * 33.8639)).ToString() + " QNH";
+            txtAltInHg.Text = Math.Round(Convert.ToDecimal(metar.altimeter),2).ToString() + " inHg";
+            txtAltQNH.Text = Math.Round((Convert.ToDecimal(metar.altimeter) * Convert.ToDecimal(33.8639)),0).ToString() + " QNH";
             txtElevMeter.Text = metar.elevationMeter + " m";
-            txtElevFeet.Text = Convert.ToInt32((Convert.ToDouble(metar.elevationMeter) * 3.28084)).ToString() + " ft";
+            txtElevFeet.Text = Math.Round((Convert.ToDecimal(metar.elevationMeter) * Convert.ToDecimal(3.28084)),0).ToString() + " ft";
             if (metar.skyCondition != null)
             {
                 foreach (SkyCondition condition in metar.skyCondition)
