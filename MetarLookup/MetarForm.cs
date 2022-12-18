@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Windows.Forms;
 using System.Xml;
 
 
@@ -12,9 +13,9 @@ namespace MetarLookup
             InitializeComponent();
             CultureInfo culture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = culture;
-
+            
         }
-
+       
 
         static async Task<Metar> GetMetarAsync(string airportCode)
         {
@@ -254,6 +255,76 @@ namespace MetarLookup
             txtDepartureAtis.Clear();
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                this.BackColor = Color.FromArgb(64, 64, 64);
+                this.ForeColor = Color.White;
+               
+                foreach (Control control in this.Controls)
+                {
+                    if (control is Button)
+                    {
+                        Button button = (Button)control;
+                        button.BackColor = Color.Black;
+                        button.ForeColor = Color.White;
+                    }
+                    if (control is TextBox)
+                    {
+                        TextBox textBox = (TextBox)control;
+                        textBox.BackColor = Color.DarkGray;
+                        textBox.ForeColor = Color.Black;
+                    }
+
+                }
+                foreach (TabPage page in tabControl1.TabPages)
+                {
+                    
+                    foreach (Control control in page.Controls)
+                    {
+                        if (control is TextBox)
+                        {
+                            TextBox textBox = (TextBox)control;
+                            textBox.BackColor = Color.DarkGray;
+                            textBox.ForeColor = Color.Black;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                this.BackColor = Color.White;
+                this.ForeColor = Color.Black;
+                foreach (Control control in this.Controls)
+                {
+                    if (control is Button)
+                    {
+                        Button button = (Button)control;
+                        button.BackColor = Color.White;
+                        button.ForeColor = Color.Black;
+                    }
+                    if (control is TextBox)
+                    {
+                        TextBox textBox = (TextBox)control;
+                        textBox.BackColor = Color.FromArgb(227, 227, 227);
+                        textBox.ForeColor = Color.Black;
+                    }
+                }
+                foreach (TabPage page in tabControl1.TabPages)
+                {
+                    foreach (Control control in page.Controls)
+                    {
+                        if (control is TextBox)
+                        {
+                            TextBox textBox = (TextBox)control;
+                            textBox.BackColor = Color.FromArgb(227, 227, 227);
+                            textBox.ForeColor = Color.Black;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     
