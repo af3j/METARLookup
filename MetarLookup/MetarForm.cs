@@ -6,8 +6,11 @@ using System.Xml;
 
 namespace MetarLookup
 {
+    
     public partial class MetarForm : Form
     {
+        string arrivalAtis;
+        string departureAtis;
         public MetarForm()
         {
             InitializeComponent();
@@ -212,8 +215,8 @@ namespace MetarLookup
                 var body = await response.Content.ReadAsStringAsync();
                 if (body.Contains("error"))
                 {
-                    txtArrivalAtis.Text = "ATIS is not available";
-                    txtDepartureAtis.Text = "ATIS is not available";
+                    arrivalAtis = "ATIS is not available";
+                    departureAtis = "ATIS is not available";
                 }
                 else
                 {
@@ -221,27 +224,31 @@ namespace MetarLookup
 
                     if (atis[0].type == "arr")
                     {
-                        txtArrivalAtis.Text = atis[0].datis;
+                        arrivalAtis= atis[0].datis;
                     }
                     else if (atis[0].type == "dep")
                     {
-                        txtDepartureAtis.Text = atis[0].datis;
+                        departureAtis = atis[0].datis;
                     }
                     else if (atis[0].type == "combined")
                     {
-                        txtArrivalAtis.Text = "***COMBINED ATIS***" + Environment.NewLine + atis[0].datis;
+                        arrivalAtis = "***COMBINED ATIS***" + Environment.NewLine + atis[0].datis;
+                        departureAtis = "***COMBINED ATIS***" + Environment.NewLine + atis[0].datis;
+                        txtAtis.Text = arrivalAtis;
                     }
                     if (atis[1].type == "arr")
                     {
-                        txtArrivalAtis.Text = atis[1].datis;
+                        arrivalAtis = atis[1].datis;
                     }
                     else if (atis[1].type == "dep")
                     {
-                        txtDepartureAtis.Text = atis[1].datis;
+                        departureAtis = atis[1].datis;
                     }
                 }
                 
             }
+            txtAtis.Text = arrivalAtis;
+            btnArrivalAtis.Select();
         }
 
         
@@ -251,8 +258,8 @@ namespace MetarLookup
         public void clearBoxes()
         {
             txtSkyConditions.Clear();
-            txtArrivalAtis.Clear();
-            txtDepartureAtis.Clear();
+            txtAtis.Clear();
+
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -278,19 +285,7 @@ namespace MetarLookup
                     }
 
                 }
-                foreach (TabPage page in tabControl1.TabPages)
-                {
-                    
-                    foreach (Control control in page.Controls)
-                    {
-                        if (control is TextBox)
-                        {
-                            TextBox textBox = (TextBox)control;
-                            textBox.BackColor = Color.DarkGray;
-                            textBox.ForeColor = Color.Black;
-                        }
-                    }
-                }
+               
             }
             else
             {
@@ -311,20 +306,23 @@ namespace MetarLookup
                         textBox.ForeColor = Color.Black;
                     }
                 }
-                foreach (TabPage page in tabControl1.TabPages)
-                {
-                    foreach (Control control in page.Controls)
-                    {
-                        if (control is TextBox)
-                        {
-                            TextBox textBox = (TextBox)control;
-                            textBox.BackColor = Color.FromArgb(227, 227, 227);
-                            textBox.ForeColor = Color.Black;
-                        }
-                    }
-                }
+                
             }
         }
+
+        private void btnArrivalAtis_Click(object sender, EventArgs e)
+        {
+            txtAtis.Clear();
+            txtAtis.Text = arrivalAtis;
+        }
+
+        private void btnDepartureAtis_Click(object sender, EventArgs e)
+        {
+            txtAtis.Clear();
+            txtAtis.Text = departureAtis;
+        }
+
+       
     }
 
     

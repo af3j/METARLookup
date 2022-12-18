@@ -67,15 +67,10 @@
             this.txtAltQNH = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabArrivalAtis = new System.Windows.Forms.TabPage();
-            this.txtArrivalAtis = new System.Windows.Forms.TextBox();
-            this.tabDepartureAtis = new System.Windows.Forms.TabPage();
-            this.txtDepartureAtis = new System.Windows.Forms.TextBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.tabControl1.SuspendLayout();
-            this.tabArrivalAtis.SuspendLayout();
-            this.tabDepartureAtis.SuspendLayout();
+            this.txtAtis = new System.Windows.Forms.TextBox();
+            this.btnArrivalAtis = new System.Windows.Forms.Button();
+            this.btnDepartureAtis = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtAirportCode
@@ -91,7 +86,7 @@
             // 
             this.btnGetMetar.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.btnGetMetar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnGetMetar.Location = new System.Drawing.Point(124, 12);
+            this.btnGetMetar.Location = new System.Drawing.Point(118, 8);
             this.btnGetMetar.Name = "btnGetMetar";
             this.btnGetMetar.Size = new System.Drawing.Size(86, 23);
             this.btnGetMetar.TabIndex = 1;
@@ -314,7 +309,7 @@
             this.txtSkyConditions.Multiline = true;
             this.txtSkyConditions.Name = "txtSkyConditions";
             this.txtSkyConditions.ReadOnly = true;
-            this.txtSkyConditions.Size = new System.Drawing.Size(126, 130);
+            this.txtSkyConditions.Size = new System.Drawing.Size(123, 130);
             this.txtSkyConditions.TabIndex = 25;
             // 
             // label11
@@ -430,62 +425,6 @@
             this.txtName.Size = new System.Drawing.Size(376, 16);
             this.txtName.TabIndex = 37;
             // 
-            // tabControl1
-            // 
-            this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
-            this.tabControl1.Controls.Add(this.tabArrivalAtis);
-            this.tabControl1.Controls.Add(this.tabDepartureAtis);
-            this.tabControl1.Location = new System.Drawing.Point(12, 181);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(0);
-            this.tabControl1.Multiline = true;
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(424, 261);
-            this.tabControl1.TabIndex = 40;
-            // 
-            // tabArrivalAtis
-            // 
-            this.tabArrivalAtis.BackColor = System.Drawing.Color.Transparent;
-            this.tabArrivalAtis.Controls.Add(this.txtArrivalAtis);
-            this.tabArrivalAtis.Location = new System.Drawing.Point(4, 27);
-            this.tabArrivalAtis.Name = "tabArrivalAtis";
-            this.tabArrivalAtis.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArrivalAtis.Size = new System.Drawing.Size(416, 230);
-            this.tabArrivalAtis.TabIndex = 0;
-            this.tabArrivalAtis.Text = "ARR ATIS";
-            // 
-            // txtArrivalAtis
-            // 
-            this.txtArrivalAtis.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtArrivalAtis.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtArrivalAtis.Location = new System.Drawing.Point(0, 0);
-            this.txtArrivalAtis.Multiline = true;
-            this.txtArrivalAtis.Name = "txtArrivalAtis";
-            this.txtArrivalAtis.ReadOnly = true;
-            this.txtArrivalAtis.Size = new System.Drawing.Size(416, 233);
-            this.txtArrivalAtis.TabIndex = 41;
-            // 
-            // tabDepartureAtis
-            // 
-            this.tabDepartureAtis.Controls.Add(this.txtDepartureAtis);
-            this.tabDepartureAtis.Location = new System.Drawing.Point(4, 27);
-            this.tabDepartureAtis.Name = "tabDepartureAtis";
-            this.tabDepartureAtis.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDepartureAtis.Size = new System.Drawing.Size(416, 230);
-            this.tabDepartureAtis.TabIndex = 1;
-            this.tabDepartureAtis.Text = "DEP ATIS";
-            this.tabDepartureAtis.UseVisualStyleBackColor = true;
-            // 
-            // txtDepartureAtis
-            // 
-            this.txtDepartureAtis.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtDepartureAtis.Location = new System.Drawing.Point(-3, -3);
-            this.txtDepartureAtis.Multiline = true;
-            this.txtDepartureAtis.Name = "txtDepartureAtis";
-            this.txtDepartureAtis.ReadOnly = true;
-            this.txtDepartureAtis.Size = new System.Drawing.Size(422, 244);
-            this.txtDepartureAtis.TabIndex = 42;
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -497,14 +436,51 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // txtAtis
+            // 
+            this.txtAtis.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.txtAtis.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtAtis.Location = new System.Drawing.Point(12, 216);
+            this.txtAtis.Multiline = true;
+            this.txtAtis.Name = "txtAtis";
+            this.txtAtis.ReadOnly = true;
+            this.txtAtis.Size = new System.Drawing.Size(421, 233);
+            this.txtAtis.TabIndex = 42;
+            // 
+            // btnArrivalAtis
+            // 
+            this.btnArrivalAtis.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnArrivalAtis.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnArrivalAtis.Location = new System.Drawing.Point(12, 187);
+            this.btnArrivalAtis.Name = "btnArrivalAtis";
+            this.btnArrivalAtis.Size = new System.Drawing.Size(86, 23);
+            this.btnArrivalAtis.TabIndex = 43;
+            this.btnArrivalAtis.Text = "ARR ATIS";
+            this.btnArrivalAtis.UseVisualStyleBackColor = true;
+            this.btnArrivalAtis.Click += new System.EventHandler(this.btnArrivalAtis_Click);
+            // 
+            // btnDepartureAtis
+            // 
+            this.btnDepartureAtis.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnDepartureAtis.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnDepartureAtis.Location = new System.Drawing.Point(104, 187);
+            this.btnDepartureAtis.Name = "btnDepartureAtis";
+            this.btnDepartureAtis.Size = new System.Drawing.Size(86, 23);
+            this.btnDepartureAtis.TabIndex = 44;
+            this.btnDepartureAtis.Text = "DEP ATIS";
+            this.btnDepartureAtis.UseVisualStyleBackColor = true;
+            this.btnDepartureAtis.Click += new System.EventHandler(this.btnDepartureAtis_Click);
+            // 
             // MetarForm
             // 
             this.AcceptButton = this.btnGetMetar;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(444, 639);
+            this.Controls.Add(this.btnDepartureAtis);
+            this.Controls.Add(this.btnArrivalAtis);
+            this.Controls.Add(this.txtAtis);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.txtAltQNH);
@@ -544,11 +520,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MetarForm";
             this.Text = "METAR Lookup";
-            this.tabControl1.ResumeLayout(false);
-            this.tabArrivalAtis.ResumeLayout(false);
-            this.tabArrivalAtis.PerformLayout();
-            this.tabDepartureAtis.ResumeLayout(false);
-            this.tabDepartureAtis.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -593,11 +564,9 @@
         private TextBox txtAltQNH;
         private Label label17;
         private TextBox txtName;
-        private TabControl tabControl1;
-        private TabPage tabArrivalAtis;
-        private TabPage tabDepartureAtis;
-        private TextBox txtArrivalAtis;
-        private TextBox txtDepartureAtis;
         private CheckBox checkBox1;
+        private TextBox txtAtis;
+        private Button btnArrivalAtis;
+        private Button btnDepartureAtis;
     }
 }
