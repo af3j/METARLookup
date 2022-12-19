@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Configuration;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Xml;
@@ -16,7 +17,14 @@ namespace MetarLookup
             InitializeComponent();
             CultureInfo culture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = culture;
-            
+            if (ConfigurationManager.AppSettings["DarkThemeYN"]=="Y")
+            {
+                checkBox1.Checked= true;
+            }
+            else
+            {
+                checkBox1.Checked = false;
+            }
         }
        
 
@@ -188,7 +196,7 @@ namespace MetarLookup
                 RequestUri = new Uri("https://airport-info.p.rapidapi.com/airport?icao=" + code),
                 Headers =
                         {
-                            { "X-RapidAPI-Key", "5a0f13e2cemsh82c55bdc6480488p16ecf0jsn71e3a74d3d2e" },
+                            { "X-RapidAPI-Key", ConfigurationManager.AppSettings["RapidAPIKey"] },
                             { "X-RapidAPI-Host", "airport-info.p.rapidapi.com" },
                         },
             };
@@ -266,6 +274,8 @@ namespace MetarLookup
         {
             if (checkBox1.Checked)
             {
+                UpdateSetting("DarkThemeYN", "Y");
+                ConfigurationManager.AppSettings["DarkThemeYN"] = "Y";
                 this.BackColor = Color.FromArgb(64, 64, 64);
                 this.ForeColor = Color.White;
                
@@ -289,14 +299,15 @@ namespace MetarLookup
             }
             else
             {
-                this.BackColor = Color.White;
+                UpdateSetting("DarkThemeYN", "N");
+                this.BackColor = SystemColors.Control;
                 this.ForeColor = Color.Black;
                 foreach (Control control in this.Controls)
                 {
                     if (control is Button)
                     {
                         Button button = (Button)control;
-                        button.BackColor = Color.White;
+                        button.BackColor = SystemColors.Control;
                         button.ForeColor = Color.Black;
                     }
                     if (control is TextBox)
@@ -305,11 +316,24 @@ namespace MetarLookup
                         textBox.BackColor = Color.FromArgb(227, 227, 227);
                         textBox.ForeColor = Color.Black;
                     }
+                    if(control.Name == "txtAirportCode")
+                    {
+                        TextBox textBox = (TextBox)control;
+                        textBox.BackColor = Color.White;
+                        textBox.ForeColor = Color.Black;
+                    }
                 }
                 
             }
         }
+        private static void UpdateSetting(string key, string value)
+        {
+            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            configuration.AppSettings.Settings[key].Value = value;
+            configuration.Save();
 
+            ConfigurationManager.RefreshSection("appSettings");
+        }
         private void btnArrivalAtis_Click(object sender, EventArgs e)
         {
             txtAtis.Clear();
