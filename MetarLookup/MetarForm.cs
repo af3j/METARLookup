@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Globalization;
 using System.Windows.Forms;
@@ -189,6 +190,7 @@ namespace MetarLookup
 
         public async Task getAirportNameAsync(string code)
         {
+            var section = ConfigurationManager.GetSection("secureAppSettings") as NameValueCollection;
             var client = new HttpClient();
             var request = new HttpRequestMessage
             {
@@ -196,7 +198,8 @@ namespace MetarLookup
                 RequestUri = new Uri("https://airport-info.p.rapidapi.com/airport?icao=" + code),
                 Headers =
                         {
-                            { "X-RapidAPI-Key", ConfigurationManager.AppSettings["RapidAPIKey"] },
+                            //{ "X-RapidAPI-Key", ConfigurationManager.AppSettings["RapidAPIKey"] },
+                            { "X-RapidAPI-Key",section["RapidAPIKey"] },
                             { "X-RapidAPI-Host", "airport-info.p.rapidapi.com" },
                         },
             };
