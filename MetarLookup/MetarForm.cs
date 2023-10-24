@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace MetarLookup
 {
-    
+
     public partial class MetarForm : Form
     {
         string arrivalAtis;
@@ -18,16 +18,16 @@ namespace MetarLookup
             InitializeComponent();
             CultureInfo culture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = culture;
-            if (ConfigurationManager.AppSettings["DarkThemeYN"]=="Y")
+            if (ConfigurationManager.AppSettings["DarkThemeYN"] == "Y")
             {
-                checkBox1.Checked= true;
+                checkBox1.Checked = true;
             }
             else
             {
                 checkBox1.Checked = false;
             }
         }
-       
+
 
         static async Task<Metar> GetMetarAsync(string airportCode)
         {
@@ -41,7 +41,7 @@ namespace MetarLookup
                 client.DefaultRequestHeaders.Add("referer", "https://www.aviationweather.gov/");
 
                 // Send a GET request to the web service's API endpoint
-                string url = "https://www.aviationweather.gov/adds/dataserver_current/httpparam?dataSource=metars&requestType=retrieve&format=xml&mostRecent=true&stationString=" + airportCode + " &hoursBeforeNow=3";
+                string url = "https://aviationweather.gov/cgi-bin/data/dataserver.php?requestType=retrieve&dataSource=metars&stationString=" + airportCode + " &hoursBeforeNow=3&format=xml&mostRecent=true";
                 HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
 
                 // Read the response as a string
@@ -116,19 +116,19 @@ namespace MetarLookup
             string airportCode = txtAirportCode.Text;
 
             // Get the METAR weather report for the specified airport code
-            try 
-            { 
-            metar = GetMetarAsync(airportCode).Result;
+            try
+            {
+                metar = GetMetarAsync(airportCode).Result;
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
             }
             try
             {
                 await getAirportNameAsync(airportCode);
             }
-            catch (Exception ex) 
-            { 
+            catch (Exception ex)
+            {
             }
             try
             {
@@ -153,10 +153,10 @@ namespace MetarLookup
             txtSpeed.Text = metar.windSpeedKt + " kt";
             txtGusts.Text = metar.windGustsKt + " kt";
             txtVis.Text = metar.visibility + " sm";
-            txtAltInHg.Text = Math.Round(Convert.ToDecimal(metar.altimeter),2).ToString() + " inHg";
-            txtAltQNH.Text = Math.Round((Convert.ToDecimal(metar.altimeter) * Convert.ToDecimal(33.8639)),0).ToString() + " QNH";
+            txtAltInHg.Text = Math.Round(Convert.ToDecimal(metar.altimeter), 2).ToString() + " inHg";
+            txtAltQNH.Text = Math.Round((Convert.ToDecimal(metar.altimeter) * Convert.ToDecimal(33.8639)), 0).ToString() + " QNH";
             txtElevMeter.Text = metar.elevationMeter + " m";
-            txtElevFeet.Text = Math.Round((Convert.ToDecimal(metar.elevationMeter) * Convert.ToDecimal(3.28084)),0).ToString() + " ft";
+            txtElevFeet.Text = Math.Round((Convert.ToDecimal(metar.elevationMeter) * Convert.ToDecimal(3.28084)), 0).ToString() + " ft";
             if (metar.skyCondition != null)
             {
                 foreach (SkyCondition condition in metar.skyCondition)
@@ -218,7 +218,7 @@ namespace MetarLookup
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri("https://datis.clowd.io/api/" + code),   
+                RequestUri = new Uri("https://datis.clowd.io/api/" + code),
             };
             using (var response = await client.SendAsync(request))
             {
@@ -235,7 +235,7 @@ namespace MetarLookup
 
                     if (atis[0].type == "arr")
                     {
-                        arrivalAtis= atis[0].datis;
+                        arrivalAtis = atis[0].datis;
                     }
                     else if (atis[0].type == "dep")
                     {
@@ -256,15 +256,15 @@ namespace MetarLookup
                         departureAtis = atis[1].datis;
                     }
                 }
-                
+
             }
             txtAtis.Text = arrivalAtis;
             btnArrivalAtis.Select();
         }
 
-        
 
-        
+
+
 
         public void clearBoxes()
         {
@@ -281,7 +281,7 @@ namespace MetarLookup
                 ConfigurationManager.AppSettings["DarkThemeYN"] = "Y";
                 this.BackColor = Color.FromArgb(64, 64, 64);
                 this.ForeColor = Color.White;
-               
+
                 foreach (Control control in this.Controls)
                 {
                     if (control is Button)
@@ -298,7 +298,7 @@ namespace MetarLookup
                     }
 
                 }
-               
+
             }
             else
             {
@@ -319,14 +319,14 @@ namespace MetarLookup
                         textBox.BackColor = Color.FromArgb(227, 227, 227);
                         textBox.ForeColor = Color.Black;
                     }
-                    if(control.Name == "txtAirportCode")
+                    if (control.Name == "txtAirportCode")
                     {
                         TextBox textBox = (TextBox)control;
                         textBox.BackColor = Color.White;
                         textBox.ForeColor = Color.Black;
                     }
                 }
-                
+
             }
         }
         private static void UpdateSetting(string key, string value)
@@ -349,9 +349,9 @@ namespace MetarLookup
             txtAtis.Text = departureAtis;
         }
 
-       
+     
     }
 
-    
+
 
 }
