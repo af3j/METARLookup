@@ -141,22 +141,22 @@ namespace MetarLookup
 
             // Display the METAR weather report
             txtMetarReport.Text = metar.rawText;
-            txtID.Text = metar.stationID;
+            txtID.Text = " " + metar.stationID;
             if (metar.observationTime != null)
             {
-                txtDate.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
-                txtTime.Text = DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss") + " Z";
+                txtDate.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+                txtTime.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss") + " Z";
             }
-            txtTempC.Text = metar.tempC + " C";
-            txtDew.Text = metar.dewpointC + " C"; ;
-            txtDir.Text = metar.windDir;
-            txtSpeed.Text = metar.windSpeedKt + " kt";
-            txtGusts.Text = metar.windGustsKt + " kt";
-            txtVis.Text = metar.visibility + " sm";
-            txtAltInHg.Text = Math.Round(Convert.ToDecimal(metar.altimeter), 2).ToString() + " inHg";
-            txtAltQNH.Text = Math.Round((Convert.ToDecimal(metar.altimeter) * Convert.ToDecimal(33.8639)), 0).ToString() + " QNH";
-            txtElevMeter.Text = metar.elevationMeter + " m";
-            txtElevFeet.Text = Math.Round((Convert.ToDecimal(metar.elevationMeter) * Convert.ToDecimal(3.28084)), 0).ToString() + " ft";
+            txtTempC.Text = " " + metar.tempC + " C";
+            txtDew.Text = " " + metar.dewpointC + " C"; ;
+            txtDir.Text = " " + metar.windDir;
+            txtSpeed.Text = " " + metar.windSpeedKt + " kt";
+            txtGusts.Text = " " + metar.windGustsKt + " kt";
+            txtVis.Text = " " + metar.visibility + " sm";
+            txtAltInHg.Text = " " + Math.Round(Convert.ToDecimal(metar.altimeter), 2).ToString() + " inHg";
+            txtAltQNH.Text = " " + Math.Round((Convert.ToDecimal(metar.altimeter) * Convert.ToDecimal(33.8639)), 0).ToString() + " QNH";
+            txtElevMeter.Text = " " + metar.elevationMeter + " m";
+            txtElevFeet.Text = " " + Math.Round((Convert.ToDecimal(metar.elevationMeter) * Convert.ToDecimal(3.28084)), 0).ToString() + " ft";
             if (metar.skyCondition != null)
             {
                 foreach (SkyCondition condition in metar.skyCondition)
@@ -208,7 +208,8 @@ namespace MetarLookup
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
                 Airport airport = JsonConvert.DeserializeObject<Airport>(body);
-                txtName.Text = airport.name;
+                txtName.Text = " " + airport.name;
+                txtLocation.Text = " " + airport.location;
             }
         }
 
@@ -349,7 +350,14 @@ namespace MetarLookup
             txtAtis.Text = departureAtis;
         }
 
+        private void label18_Click(object sender, EventArgs e)
+        {
 
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+        }
     }
 
 

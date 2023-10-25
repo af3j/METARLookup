@@ -71,6 +71,8 @@
             txtAtis = new TextBox();
             btnArrivalAtis = new Button();
             btnDepartureAtis = new Button();
+            txtLocation = new TextBox();
+            label18 = new Label();
             SuspendLayout();
             // 
             // txtAirportCode
@@ -103,7 +105,7 @@
             // 
             txtMetarReport.BackColor = SystemColors.ControlLight;
             txtMetarReport.BorderStyle = BorderStyle.None;
-            txtMetarReport.Location = new Point(12, 112);
+            txtMetarReport.Location = new Point(12, 143);
             txtMetarReport.Multiline = true;
             txtMetarReport.Name = "txtMetarReport";
             txtMetarReport.ReadOnly = true;
@@ -113,7 +115,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 94);
+            label1.Location = new Point(12, 125);
             label1.Name = "label1";
             label1.Size = new Size(87, 15);
             label1.TabIndex = 4;
@@ -132,7 +134,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(12, 41);
+            label2.Location = new Point(13, 41);
             label2.Name = "label2";
             label2.Size = new Size(35, 15);
             label2.TabIndex = 6;
@@ -141,7 +143,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(12, 458);
+            label3.Location = new Point(12, 489);
             label3.Name = "label3";
             label3.Size = new Size(68, 15);
             label3.TabIndex = 8;
@@ -151,7 +153,7 @@
             // 
             txtDate.BackColor = SystemColors.ControlLight;
             txtDate.BorderStyle = BorderStyle.None;
-            txtDate.Location = new Point(84, 455);
+            txtDate.Location = new Point(84, 486);
             txtDate.Name = "txtDate";
             txtDate.ReadOnly = true;
             txtDate.Size = new Size(88, 16);
@@ -160,7 +162,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(12, 487);
+            label4.Location = new Point(12, 518);
             label4.Name = "label4";
             label4.Size = new Size(98, 15);
             label4.TabIndex = 10;
@@ -170,7 +172,7 @@
             // 
             txtTempC.BackColor = SystemColors.ControlLight;
             txtTempC.BorderStyle = BorderStyle.None;
-            txtTempC.Location = new Point(159, 484);
+            txtTempC.Location = new Point(159, 515);
             txtTempC.Name = "txtTempC";
             txtTempC.ReadOnly = true;
             txtTempC.Size = new Size(44, 16);
@@ -179,7 +181,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(209, 487);
+            label5.Location = new Point(209, 518);
             label5.Name = "label5";
             label5.Size = new Size(12, 15);
             label5.TabIndex = 11;
@@ -189,7 +191,7 @@
             // 
             txtDew.BackColor = SystemColors.ControlLight;
             txtDew.BorderStyle = BorderStyle.None;
-            txtDew.Location = new Point(225, 483);
+            txtDew.Location = new Point(225, 514);
             txtDew.Name = "txtDew";
             txtDew.ReadOnly = true;
             txtDew.Size = new Size(44, 16);
@@ -198,7 +200,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(13, 515);
+            label6.Location = new Point(13, 546);
             label6.Name = "label6";
             label6.Size = new Size(136, 15);
             label6.TabIndex = 13;
@@ -208,7 +210,7 @@
             // 
             txtSpeed.BackColor = SystemColors.ControlLight;
             txtSpeed.BorderStyle = BorderStyle.None;
-            txtSpeed.Location = new Point(215, 512);
+            txtSpeed.Location = new Point(215, 543);
             txtSpeed.Name = "txtSpeed";
             txtSpeed.ReadOnly = true;
             txtSpeed.Size = new Size(33, 16);
@@ -217,7 +219,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(198, 515);
+            label7.Location = new Point(198, 546);
             label7.Name = "label7";
             label7.Size = new Size(12, 15);
             label7.TabIndex = 15;
@@ -227,7 +229,7 @@
             // 
             txtDir.BackColor = SystemColors.ControlLight;
             txtDir.BorderStyle = BorderStyle.None;
-            txtDir.Location = new Point(159, 512);
+            txtDir.Location = new Point(159, 543);
             txtDir.Name = "txtDir";
             txtDir.ReadOnly = true;
             txtDir.Size = new Size(33, 16);
@@ -237,7 +239,7 @@
             // 
             txtVis.BackColor = SystemColors.ControlLight;
             txtVis.BorderStyle = BorderStyle.None;
-            txtVis.Location = new Point(84, 542);
+            txtVis.Location = new Point(84, 573);
             txtVis.Name = "txtVis";
             txtVis.ReadOnly = true;
             txtVis.Size = new Size(58, 16);
@@ -246,7 +248,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(13, 545);
+            label8.Location = new Point(13, 576);
             label8.Name = "label8";
             label8.Size = new Size(51, 15);
             label8.TabIndex = 17;
@@ -256,7 +258,7 @@
             // 
             txtAltInHg.BackColor = SystemColors.ControlLight;
             txtAltInHg.BorderStyle = BorderStyle.None;
-            txtAltInHg.Location = new Point(84, 570);
+            txtAltInHg.Location = new Point(84, 601);
             txtAltInHg.Name = "txtAltInHg";
             txtAltInHg.ReadOnly = true;
             txtAltInHg.Size = new Size(65, 16);
@@ -265,7 +267,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(13, 573);
+            label9.Location = new Point(13, 604);
             label9.Name = "label9";
             label9.Size = new Size(56, 15);
             label9.TabIndex = 19;
@@ -286,7 +288,7 @@
             // 
             txtTime.BackColor = SystemColors.ControlLight;
             txtTime.BorderStyle = BorderStyle.None;
-            txtTime.Location = new Point(194, 455);
+            txtTime.Location = new Point(194, 486);
             txtTime.Name = "txtTime";
             txtTime.ReadOnly = true;
             txtTime.Size = new Size(88, 16);
@@ -295,7 +297,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(178, 458);
+            label10.Location = new Point(178, 489);
             label10.Name = "label10";
             label10.Size = new Size(12, 15);
             label10.TabIndex = 24;
@@ -305,7 +307,7 @@
             // 
             txtSkyConditions.BackColor = SystemColors.ControlLight;
             txtSkyConditions.BorderStyle = BorderStyle.None;
-            txtSkyConditions.Location = new Point(310, 486);
+            txtSkyConditions.Location = new Point(310, 517);
             txtSkyConditions.Multiline = true;
             txtSkyConditions.Name = "txtSkyConditions";
             txtSkyConditions.ReadOnly = true;
@@ -315,7 +317,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(309, 468);
+            label11.Location = new Point(309, 499);
             label11.Name = "label11";
             label11.Size = new Size(86, 15);
             label11.TabIndex = 26;
@@ -324,17 +326,17 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(389, 621);
+            label12.Location = new Point(389, 652);
             label12.Name = "label12";
             label12.Size = new Size(40, 15);
             label12.TabIndex = 27;
-            label12.Text = "v.1.2.0";
+            label12.Text = "v.1.2.1";
             // 
             // txtGusts
             // 
             txtGusts.BackColor = SystemColors.ControlLight;
             txtGusts.BorderStyle = BorderStyle.None;
-            txtGusts.Location = new Point(272, 512);
+            txtGusts.Location = new Point(272, 543);
             txtGusts.Name = "txtGusts";
             txtGusts.ReadOnly = true;
             txtGusts.Size = new Size(33, 16);
@@ -343,7 +345,7 @@
             // label13
             // 
             label13.AutoSize = true;
-            label13.Location = new Point(255, 515);
+            label13.Location = new Point(255, 546);
             label13.Name = "label13";
             label13.Size = new Size(12, 15);
             label13.TabIndex = 29;
@@ -352,7 +354,7 @@
             // label14
             // 
             label14.AutoSize = true;
-            label14.Location = new Point(14, 602);
+            label14.Location = new Point(14, 633);
             label14.Name = "label14";
             label14.Size = new Size(55, 15);
             label14.TabIndex = 30;
@@ -362,7 +364,7 @@
             // 
             txtElevFeet.BackColor = SystemColors.ControlLight;
             txtElevFeet.BorderStyle = BorderStyle.None;
-            txtElevFeet.Location = new Point(84, 599);
+            txtElevFeet.Location = new Point(84, 630);
             txtElevFeet.Name = "txtElevFeet";
             txtElevFeet.ReadOnly = true;
             txtElevFeet.Size = new Size(58, 16);
@@ -372,7 +374,7 @@
             // 
             txtElevMeter.BackColor = SystemColors.ControlLight;
             txtElevMeter.BorderStyle = BorderStyle.None;
-            txtElevMeter.Location = new Point(162, 599);
+            txtElevMeter.Location = new Point(162, 630);
             txtElevMeter.Name = "txtElevMeter";
             txtElevMeter.ReadOnly = true;
             txtElevMeter.Size = new Size(59, 16);
@@ -381,7 +383,7 @@
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new Point(147, 602);
+            label15.Location = new Point(147, 633);
             label15.Name = "label15";
             label15.Size = new Size(12, 15);
             label15.TabIndex = 33;
@@ -390,7 +392,7 @@
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(154, 573);
+            label16.Location = new Point(154, 604);
             label16.Name = "label16";
             label16.Size = new Size(12, 15);
             label16.TabIndex = 34;
@@ -400,7 +402,7 @@
             // 
             txtAltQNH.BackColor = SystemColors.ControlLight;
             txtAltQNH.BorderStyle = BorderStyle.None;
-            txtAltQNH.Location = new Point(170, 570);
+            txtAltQNH.Location = new Point(170, 601);
             txtAltQNH.Name = "txtAltQNH";
             txtAltQNH.ReadOnly = true;
             txtAltQNH.Size = new Size(65, 16);
@@ -409,7 +411,7 @@
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(12, 70);
+            label17.Location = new Point(14, 68);
             label17.Name = "label17";
             label17.Size = new Size(39, 15);
             label17.TabIndex = 36;
@@ -419,10 +421,10 @@
             // 
             txtName.BackColor = SystemColors.ControlLight;
             txtName.BorderStyle = BorderStyle.None;
-            txtName.Location = new Point(56, 67);
+            txtName.Location = new Point(72, 67);
             txtName.Name = "txtName";
             txtName.ReadOnly = true;
-            txtName.Size = new Size(376, 16);
+            txtName.Size = new Size(360, 16);
             txtName.TabIndex = 37;
             // 
             // checkBox1
@@ -440,7 +442,7 @@
             // 
             txtAtis.BackColor = SystemColors.ControlLight;
             txtAtis.BorderStyle = BorderStyle.None;
-            txtAtis.Location = new Point(12, 216);
+            txtAtis.Location = new Point(12, 247);
             txtAtis.Multiline = true;
             txtAtis.Name = "txtAtis";
             txtAtis.ReadOnly = true;
@@ -451,7 +453,7 @@
             // 
             btnArrivalAtis.FlatAppearance.BorderColor = Color.Black;
             btnArrivalAtis.FlatStyle = FlatStyle.Popup;
-            btnArrivalAtis.Location = new Point(12, 187);
+            btnArrivalAtis.Location = new Point(12, 218);
             btnArrivalAtis.Name = "btnArrivalAtis";
             btnArrivalAtis.Size = new Size(86, 23);
             btnArrivalAtis.TabIndex = 43;
@@ -463,7 +465,7 @@
             // 
             btnDepartureAtis.FlatAppearance.BorderColor = Color.Black;
             btnDepartureAtis.FlatStyle = FlatStyle.Popup;
-            btnDepartureAtis.Location = new Point(104, 187);
+            btnDepartureAtis.Location = new Point(104, 218);
             btnDepartureAtis.Name = "btnDepartureAtis";
             btnDepartureAtis.Size = new Size(86, 23);
             btnDepartureAtis.TabIndex = 44;
@@ -471,12 +473,35 @@
             btnDepartureAtis.UseVisualStyleBackColor = true;
             btnDepartureAtis.Click += btnDepartureAtis_Click;
             // 
+            // txtLocation
+            // 
+            txtLocation.BackColor = SystemColors.ControlLight;
+            txtLocation.BorderStyle = BorderStyle.None;
+            txtLocation.Location = new Point(72, 95);
+            txtLocation.Name = "txtLocation";
+            txtLocation.ReadOnly = true;
+            txtLocation.Size = new Size(361, 16);
+            txtLocation.TabIndex = 46;
+            txtLocation.TextChanged += textBox1_TextChanged;
+            // 
+            // label18
+            // 
+            label18.AutoSize = true;
+            label18.Location = new Point(14, 95);
+            label18.Name = "label18";
+            label18.Size = new Size(53, 15);
+            label18.TabIndex = 45;
+            label18.Text = "Location";
+            label18.Click += label18_Click;
+            // 
             // MetarForm
             // 
             AcceptButton = btnGetMetar;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(444, 639);
+            ClientSize = new Size(444, 682);
+            Controls.Add(txtLocation);
+            Controls.Add(label18);
             Controls.Add(btnDepartureAtis);
             Controls.Add(btnArrivalAtis);
             Controls.Add(txtAtis);
@@ -567,5 +592,7 @@
         private TextBox txtAtis;
         private Button btnArrivalAtis;
         private Button btnDepartureAtis;
+        private TextBox txtLocation;
+        private Label label18;
     }
 }
