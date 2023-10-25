@@ -328,7 +328,7 @@
             label12.Name = "label12";
             label12.Size = new Size(40, 15);
             label12.TabIndex = 27;
-            label12.Text = "v.1.1.5";
+            label12.Text = "v.1.2.0";
             // 
             // txtGusts
             // 

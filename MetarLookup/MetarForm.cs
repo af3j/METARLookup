@@ -349,7 +349,7 @@ namespace MetarLookup
             txtAtis.Text = departureAtis;
         }
 
-     
+
     }
 
 
