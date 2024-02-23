@@ -27,6 +27,7 @@ namespace MetarLookup
                 checkBox1.Checked = false;
             }
         }
+        
 
 
         static async Task<Metar> GetMetarAsync(string airportCode)
@@ -125,7 +126,7 @@ namespace MetarLookup
             }
             try
             {
-                await getAirportNameAsync(airportCode);
+                await getAirportData(airportCode);
             }
             catch (Exception ex)
             {
@@ -140,78 +141,130 @@ namespace MetarLookup
             }
 
             // Display the METAR weather report
-            txtMetarReport.Text = metar.rawText;
-            txtID.Text = " " + metar.stationID;
-            if (metar.observationTime != null)
+            if (metar.rawText != null)
             {
-                txtDate.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
-                txtTime.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss") + " Z";
-            }
-            txtTempC.Text = " " + metar.tempC + " C";
-            txtDew.Text = " " + metar.dewpointC + " C"; ;
-            txtDir.Text = " " + metar.windDir;
-            txtSpeed.Text = " " + metar.windSpeedKt + " kt";
-            txtGusts.Text = " " + metar.windGustsKt + " kt";
-            txtVis.Text = " " + metar.visibility + " sm";
-            txtAltInHg.Text = " " + Math.Round(Convert.ToDecimal(metar.altimeter), 2).ToString() + " inHg";
-            txtAltQNH.Text = " " + Math.Round((Convert.ToDecimal(metar.altimeter) * Convert.ToDecimal(33.8639)), 0).ToString() + " QNH";
-            txtElevMeter.Text = " " + metar.elevationMeter + " m";
-            txtElevFeet.Text = " " + Math.Round((Convert.ToDecimal(metar.elevationMeter) * Convert.ToDecimal(3.28084)), 0).ToString() + " ft";
-            if (metar.skyCondition != null)
-            {
-                foreach (SkyCondition condition in metar.skyCondition)
+                txtMetarReport.Text = metar.rawText;
+                if (metar.observationTime != null)
                 {
-                    if (condition.skyCover != "CLR" && condition.skyCover != "CAVOK")
+                    txtDate.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+                    txtTime.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss") + " Z";
+                }
+                txtTempC.Text = " " + metar.tempC + " C";
+                txtDew.Text = " " + metar.dewpointC + " C"; ;
+                txtDir.Text = " " + metar.windDir;
+                txtSpeed.Text = " " + metar.windSpeedKt + " kt";
+                txtGusts.Text = " " + metar.windGustsKt + " kt";
+                txtVis.Text = " " + metar.visibility + " sm";
+                txtAltInHg.Text = " " + Math.Round(Convert.ToDecimal(metar.altimeter), 2).ToString() + " inHg";
+                txtAltQNH.Text = " " + Math.Round((Convert.ToDecimal(metar.altimeter) * Convert.ToDecimal(33.8639)), 0).ToString() + " QNH";
+                txtElevMeter.Text = " " + metar.elevationMeter + " m";
+                txtElevFeet.Text = " " + Math.Round((Convert.ToDecimal(metar.elevationMeter) * Convert.ToDecimal(3.28084)), 0).ToString() + " ft";
+                if (metar.skyCondition != null)
+                {
+                    foreach (SkyCondition condition in metar.skyCondition)
                     {
-                        txtSkyConditions.AppendText(condition.skyCover + " at " + condition.cloudBase + System.Environment.NewLine);
-                    }
-                    else
-                    {
-                        txtSkyConditions.AppendText(condition.skyCover + System.Environment.NewLine);
+                        if (condition.skyCover != "CLR" && condition.skyCover != "CAVOK")
+                        {
+                            txtSkyConditions.AppendText(condition.skyCover + " at " + condition.cloudBase + System.Environment.NewLine);
+                        }
+                        else
+                        {
+                            txtSkyConditions.AppendText(condition.skyCover + System.Environment.NewLine);
+                        }
                     }
                 }
-            }
 
-            lblCat.Text = metar.flightCat;
-            lblCat.Visible = true;
-            if (metar.flightCat == "VFR")
-            {
-                lblCat.ForeColor = System.Drawing.Color.Green;
-            }
-            else if (metar.flightCat == "MVFR")
-            {
-                lblCat.ForeColor = System.Drawing.Color.Orange;
+                lblCat.Text = metar.flightCat;
+                lblCat.Visible = true;
+                if (metar.flightCat == "VFR")
+                {
+                    lblCat.ForeColor = System.Drawing.Color.Green;
+                }
+                else if (metar.flightCat == "MVFR")
+                {
+                    lblCat.ForeColor = System.Drawing.Color.Orange;
+                }
+                else
+                {
+                    lblCat.ForeColor = System.Drawing.Color.Red;
+                }
             }
             else
             {
-                lblCat.ForeColor = System.Drawing.Color.Red;
+                txtMetarReport.Text = "METAR is not available";
             }
         }
 
-        public async Task getAirportNameAsync(string code)
+
+        public async Task getAirportData(string code)
         {
-            var section = ConfigurationManager.GetSection("secureAppSettings") as NameValueCollection;
             var client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(3);
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri("https://airport-info.p.rapidapi.com/airport?icao=" + code),
-                Headers =
-                        {
-                            //{ "X-RapidAPI-Key", ConfigurationManager.AppSettings["RapidAPIKey"] },
-                            { "X-RapidAPI-Key",section["RapidAPIKey"] },
-                            { "X-RapidAPI-Host", "airport-info.p.rapidapi.com" },
-                        },
+                RequestUri = new Uri("https://www.airport-data.com/api/ap_info.json?icao=" + code),
+
             };
             using (var response = await client.SendAsync(request))
             {
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
                 Airport airport = JsonConvert.DeserializeObject<Airport>(body);
-                txtName.Text = " " + airport.name;
-                txtLocation.Text = " " + airport.location;
+                string airportName = airport.name;
+                string airportLocation = airport.location;
+                if (airportName == null)
+                {
+                    airportName = "Not Available";
+                }
+                if (airportLocation == null)
+                {
+                    airportLocation = "Not Available";
+                }
+                txtName.Text = " " + airportName;
+                txtLocation.Text = " " + airportLocation;
+                txtID.Text = " " + airport.icao;
             }
+
         }
+
+
+        //public async Task getAirportData(string code)
+        //{
+        //    var client = new HttpClient();
+        //    client.Timeout = TimeSpan.FromSeconds(5);
+        //    var request = new HttpRequestMessage
+        //    {
+        //        Method = HttpMethod.Get,
+        //        RequestUri = new Uri("https://airport-info.p.rapidapi.com/airport?icao=" + code),
+        //        Headers =
+        //        {
+        //            { "X-RapidAPI-Key", "" },
+        //            { "X-RapidAPI-Host", "airport-info.p.rapidapi.com" },
+        //        },
+        //    };
+        //    using (var response = await client.SendAsync(request))
+        //    {
+        //        response.EnsureSuccessStatusCode();
+        //        var body = await response.Content.ReadAsStringAsync();
+        //        Airport airport = JsonConvert.DeserializeObject<Airport>(body);
+        //        string airportName = airport.name;
+        //        string airportLocation = airport.location;
+        //        if (airportName == null)
+        //        {
+        //            airportName = "Not Available";
+        //        }
+        //        if (airportLocation == null)
+        //        {
+        //            airportLocation = "Not Available";
+        //        }
+        //        txtName.Text = " " + airportName;
+        //        txtLocation.Text = " " + airportLocation;
+        //        txtID.Text = " " + airport.icao;
+        //    }
+
+        //}
+
 
         public async Task getAirportATIS(string code)
         {
@@ -269,8 +322,18 @@ namespace MetarLookup
 
         public void clearBoxes()
         {
-            txtSkyConditions.Clear();
-            txtAtis.Clear();
+            foreach (Control textBox in Controls)
+            {
+                if ((textBox.GetType().ToString() == "System.Windows.Forms.TextBox") && textBox.Name != "txtAirportCode")
+                {
+                    if (!textBox.Name.Contains("lbl"))
+                    {
+                        textBox.Text = "";
+                    }
+                }
+             }
+
+
 
         }
 
@@ -290,6 +353,7 @@ namespace MetarLookup
                         Button button = (Button)control;
                         button.BackColor = Color.Black;
                         button.ForeColor = Color.White;
+                        
                     }
                     if (control is TextBox)
                     {
@@ -311,8 +375,9 @@ namespace MetarLookup
                     if (control is Button)
                     {
                         Button button = (Button)control;
-                        button.BackColor = SystemColors.Control;
+                        button.BackColor = Color.LightGray;
                         button.ForeColor = Color.Black;
+                        
                     }
                     if (control is TextBox)
                     {

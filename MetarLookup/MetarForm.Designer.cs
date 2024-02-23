@@ -34,45 +34,45 @@
             btnGetMetar = new Button();
             contextMenuStrip1 = new ContextMenuStrip(components);
             txtMetarReport = new TextBox();
-            label1 = new Label();
+            lblRaw = new Label();
             txtID = new TextBox();
-            label2 = new Label();
-            label3 = new Label();
+            lblICAO = new Label();
+            lblDateTime = new Label();
             txtDate = new TextBox();
-            label4 = new Label();
+            lblTempDew = new Label();
             txtTempC = new TextBox();
             label5 = new Label();
             txtDew = new TextBox();
-            label6 = new Label();
+            lblWind = new Label();
             txtSpeed = new TextBox();
             label7 = new Label();
             txtDir = new TextBox();
             txtVis = new TextBox();
-            label8 = new Label();
+            lblVis = new Label();
             txtAltInHg = new TextBox();
-            label9 = new Label();
+            lblAlt = new Label();
             lblCat = new Label();
             txtTime = new TextBox();
             label10 = new Label();
             txtSkyConditions = new TextBox();
-            label11 = new Label();
-            label12 = new Label();
+            lblSky = new Label();
+            lblVersion = new Label();
             txtGusts = new TextBox();
             label13 = new Label();
-            label14 = new Label();
+            lblElev = new Label();
             txtElevFeet = new TextBox();
             txtElevMeter = new TextBox();
             label15 = new Label();
             label16 = new Label();
             txtAltQNH = new TextBox();
-            label17 = new Label();
+            lblName = new Label();
             txtName = new TextBox();
             checkBox1 = new CheckBox();
             txtAtis = new TextBox();
             btnArrivalAtis = new Button();
             btnDepartureAtis = new Button();
             txtLocation = new TextBox();
-            label18 = new Label();
+            lblLocation = new Label();
             SuspendLayout();
             // 
             // txtAirportCode
@@ -86,14 +86,17 @@
             // 
             // btnGetMetar
             // 
+            btnGetMetar.BackColor = Color.LightGray;
             btnGetMetar.FlatAppearance.BorderColor = Color.Black;
             btnGetMetar.FlatStyle = FlatStyle.Popup;
+            btnGetMetar.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnGetMetar.Location = new Point(118, 8);
+            btnGetMetar.Margin = new Padding(1);
             btnGetMetar.Name = "btnGetMetar";
-            btnGetMetar.Size = new Size(86, 23);
+            btnGetMetar.Size = new Size(85, 46);
             btnGetMetar.TabIndex = 1;
-            btnGetMetar.Text = "Get METAR";
-            btnGetMetar.UseVisualStyleBackColor = true;
+            btnGetMetar.Text = "Get Metar";
+            btnGetMetar.UseVisualStyleBackColor = false;
             btnGetMetar.Click += btnGetMetar_Click_1;
             // 
             // contextMenuStrip1
@@ -112,14 +115,14 @@
             txtMetarReport.Size = new Size(421, 63);
             txtMetarReport.TabIndex = 3;
             // 
-            // label1
+            // lblRaw
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(12, 125);
-            label1.Name = "label1";
-            label1.Size = new Size(87, 15);
-            label1.TabIndex = 4;
-            label1.Text = "Metar Raw Text";
+            lblRaw.AutoSize = true;
+            lblRaw.Location = new Point(12, 125);
+            lblRaw.Name = "lblRaw";
+            lblRaw.Size = new Size(87, 15);
+            lblRaw.TabIndex = 4;
+            lblRaw.Text = "Metar Raw Text";
             // 
             // txtID
             // 
@@ -131,23 +134,23 @@
             txtID.Size = new Size(40, 16);
             txtID.TabIndex = 5;
             // 
-            // label2
+            // lblICAO
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(13, 41);
-            label2.Name = "label2";
-            label2.Size = new Size(35, 15);
-            label2.TabIndex = 6;
-            label2.Text = "ICAO";
+            lblICAO.AutoSize = true;
+            lblICAO.Location = new Point(13, 41);
+            lblICAO.Name = "lblICAO";
+            lblICAO.Size = new Size(35, 15);
+            lblICAO.TabIndex = 6;
+            lblICAO.Text = "ICAO";
             // 
-            // label3
+            // lblDateTime
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(12, 489);
-            label3.Name = "label3";
-            label3.Size = new Size(68, 15);
-            label3.TabIndex = 8;
-            label3.Text = "Date / Time";
+            lblDateTime.AutoSize = true;
+            lblDateTime.Location = new Point(12, 489);
+            lblDateTime.Name = "lblDateTime";
+            lblDateTime.Size = new Size(68, 15);
+            lblDateTime.TabIndex = 8;
+            lblDateTime.Text = "Date / Time";
             // 
             // txtDate
             // 
@@ -159,14 +162,14 @@
             txtDate.Size = new Size(88, 16);
             txtDate.TabIndex = 7;
             // 
-            // label4
+            // lblTempDew
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(12, 518);
-            label4.Name = "label4";
-            label4.Size = new Size(98, 15);
-            label4.TabIndex = 10;
-            label4.Text = "Temp / Dewpoint";
+            lblTempDew.AutoSize = true;
+            lblTempDew.Location = new Point(12, 518);
+            lblTempDew.Name = "lblTempDew";
+            lblTempDew.Size = new Size(98, 15);
+            lblTempDew.TabIndex = 10;
+            lblTempDew.Text = "Temp / Dewpoint";
             // 
             // txtTempC
             // 
@@ -197,14 +200,14 @@
             txtDew.Size = new Size(44, 16);
             txtDew.TabIndex = 12;
             // 
-            // label6
+            // lblWind
             // 
-            label6.AutoSize = true;
-            label6.Location = new Point(13, 546);
-            label6.Name = "label6";
-            label6.Size = new Size(136, 15);
-            label6.TabIndex = 13;
-            label6.Text = "Wind Dir / Speed / Gusts";
+            lblWind.AutoSize = true;
+            lblWind.Location = new Point(13, 546);
+            lblWind.Name = "lblWind";
+            lblWind.Size = new Size(136, 15);
+            lblWind.TabIndex = 13;
+            lblWind.Text = "Wind Dir / Speed / Gusts";
             // 
             // txtSpeed
             // 
@@ -245,14 +248,14 @@
             txtVis.Size = new Size(58, 16);
             txtVis.TabIndex = 18;
             // 
-            // label8
+            // lblVis
             // 
-            label8.AutoSize = true;
-            label8.Location = new Point(13, 576);
-            label8.Name = "label8";
-            label8.Size = new Size(51, 15);
-            label8.TabIndex = 17;
-            label8.Text = "Visibility";
+            lblVis.AutoSize = true;
+            lblVis.Location = new Point(13, 576);
+            lblVis.Name = "lblVis";
+            lblVis.Size = new Size(51, 15);
+            lblVis.TabIndex = 17;
+            lblVis.Text = "Visibility";
             // 
             // txtAltInHg
             // 
@@ -264,19 +267,19 @@
             txtAltInHg.Size = new Size(65, 16);
             txtAltInHg.TabIndex = 20;
             // 
-            // label9
+            // lblAlt
             // 
-            label9.AutoSize = true;
-            label9.Location = new Point(13, 604);
-            label9.Name = "label9";
-            label9.Size = new Size(56, 15);
-            label9.TabIndex = 19;
-            label9.Text = "Altimeter";
+            lblAlt.AutoSize = true;
+            lblAlt.Location = new Point(13, 604);
+            lblAlt.Name = "lblAlt";
+            lblAlt.Size = new Size(56, 15);
+            lblAlt.TabIndex = 19;
+            lblAlt.Text = "Altimeter";
             // 
             // lblCat
             // 
             lblCat.AutoSize = true;
-            lblCat.Font = new Font("Segoe UI", 26F, FontStyle.Bold, GraphicsUnit.Point);
+            lblCat.Font = new Font("Segoe UI", 26F, FontStyle.Bold);
             lblCat.Location = new Point(216, 15);
             lblCat.Name = "lblCat";
             lblCat.Size = new Size(171, 47);
@@ -314,23 +317,23 @@
             txtSkyConditions.Size = new Size(123, 130);
             txtSkyConditions.TabIndex = 25;
             // 
-            // label11
+            // lblSky
             // 
-            label11.AutoSize = true;
-            label11.Location = new Point(309, 499);
-            label11.Name = "label11";
-            label11.Size = new Size(86, 15);
-            label11.TabIndex = 26;
-            label11.Text = "Sky Conditions";
+            lblSky.AutoSize = true;
+            lblSky.Location = new Point(309, 499);
+            lblSky.Name = "lblSky";
+            lblSky.Size = new Size(86, 15);
+            lblSky.TabIndex = 26;
+            lblSky.Text = "Sky Conditions";
             // 
-            // label12
+            // lblVersion
             // 
-            label12.AutoSize = true;
-            label12.Location = new Point(389, 652);
-            label12.Name = "label12";
-            label12.Size = new Size(40, 15);
-            label12.TabIndex = 27;
-            label12.Text = "v.1.2.1";
+            lblVersion.AutoSize = true;
+            lblVersion.Location = new Point(389, 652);
+            lblVersion.Name = "lblVersion";
+            lblVersion.Size = new Size(40, 15);
+            lblVersion.TabIndex = 27;
+            lblVersion.Text = "v.1.3.0";
             // 
             // txtGusts
             // 
@@ -351,14 +354,14 @@
             label13.TabIndex = 29;
             label13.Text = "/";
             // 
-            // label14
+            // lblElev
             // 
-            label14.AutoSize = true;
-            label14.Location = new Point(14, 633);
-            label14.Name = "label14";
-            label14.Size = new Size(55, 15);
-            label14.TabIndex = 30;
-            label14.Text = "Elevation";
+            lblElev.AutoSize = true;
+            lblElev.Location = new Point(14, 633);
+            lblElev.Name = "lblElev";
+            lblElev.Size = new Size(55, 15);
+            lblElev.TabIndex = 30;
+            lblElev.Text = "Elevation";
             // 
             // txtElevFeet
             // 
@@ -408,14 +411,14 @@
             txtAltQNH.Size = new Size(65, 16);
             txtAltQNH.TabIndex = 35;
             // 
-            // label17
+            // lblName
             // 
-            label17.AutoSize = true;
-            label17.Location = new Point(14, 68);
-            label17.Name = "label17";
-            label17.Size = new Size(39, 15);
-            label17.TabIndex = 36;
-            label17.Text = "Name";
+            lblName.AutoSize = true;
+            lblName.Location = new Point(14, 68);
+            lblName.Name = "lblName";
+            lblName.Size = new Size(39, 15);
+            lblName.TabIndex = 36;
+            lblName.Text = "Name";
             // 
             // txtName
             // 
@@ -451,26 +454,30 @@
             // 
             // btnArrivalAtis
             // 
+            btnArrivalAtis.BackColor = Color.LightGray;
             btnArrivalAtis.FlatAppearance.BorderColor = Color.Black;
             btnArrivalAtis.FlatStyle = FlatStyle.Popup;
+            btnArrivalAtis.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnArrivalAtis.Location = new Point(12, 218);
             btnArrivalAtis.Name = "btnArrivalAtis";
             btnArrivalAtis.Size = new Size(86, 23);
             btnArrivalAtis.TabIndex = 43;
             btnArrivalAtis.Text = "ARR ATIS";
-            btnArrivalAtis.UseVisualStyleBackColor = true;
+            btnArrivalAtis.UseVisualStyleBackColor = false;
             btnArrivalAtis.Click += btnArrivalAtis_Click;
             // 
             // btnDepartureAtis
             // 
+            btnDepartureAtis.BackColor = Color.LightGray;
             btnDepartureAtis.FlatAppearance.BorderColor = Color.Black;
             btnDepartureAtis.FlatStyle = FlatStyle.Popup;
+            btnDepartureAtis.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnDepartureAtis.Location = new Point(104, 218);
             btnDepartureAtis.Name = "btnDepartureAtis";
             btnDepartureAtis.Size = new Size(86, 23);
             btnDepartureAtis.TabIndex = 44;
             btnDepartureAtis.Text = "DEP ATIS";
-            btnDepartureAtis.UseVisualStyleBackColor = true;
+            btnDepartureAtis.UseVisualStyleBackColor = false;
             btnDepartureAtis.Click += btnDepartureAtis_Click;
             // 
             // txtLocation
@@ -484,15 +491,15 @@
             txtLocation.TabIndex = 46;
             txtLocation.TextChanged += textBox1_TextChanged;
             // 
-            // label18
+            // lblLocation
             // 
-            label18.AutoSize = true;
-            label18.Location = new Point(14, 95);
-            label18.Name = "label18";
-            label18.Size = new Size(53, 15);
-            label18.TabIndex = 45;
-            label18.Text = "Location";
-            label18.Click += label18_Click;
+            lblLocation.AutoSize = true;
+            lblLocation.Location = new Point(14, 95);
+            lblLocation.Name = "lblLocation";
+            lblLocation.Size = new Size(53, 15);
+            lblLocation.TabIndex = 45;
+            lblLocation.Text = "Location";
+            lblLocation.Click += label18_Click;
             // 
             // MetarForm
             // 
@@ -501,44 +508,44 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(444, 682);
             Controls.Add(txtLocation);
-            Controls.Add(label18);
+            Controls.Add(lblLocation);
             Controls.Add(btnDepartureAtis);
             Controls.Add(btnArrivalAtis);
             Controls.Add(txtAtis);
             Controls.Add(checkBox1);
             Controls.Add(txtName);
-            Controls.Add(label17);
+            Controls.Add(lblName);
             Controls.Add(txtAltQNH);
             Controls.Add(label16);
             Controls.Add(label15);
             Controls.Add(txtElevMeter);
             Controls.Add(txtElevFeet);
-            Controls.Add(label14);
+            Controls.Add(lblElev);
             Controls.Add(label13);
             Controls.Add(txtGusts);
-            Controls.Add(label12);
-            Controls.Add(label11);
+            Controls.Add(lblVersion);
+            Controls.Add(lblSky);
             Controls.Add(txtSkyConditions);
             Controls.Add(label10);
             Controls.Add(txtTime);
             Controls.Add(lblCat);
             Controls.Add(txtAltInHg);
-            Controls.Add(label9);
+            Controls.Add(lblAlt);
             Controls.Add(txtVis);
-            Controls.Add(label8);
+            Controls.Add(lblVis);
             Controls.Add(txtSpeed);
             Controls.Add(label7);
             Controls.Add(txtDir);
-            Controls.Add(label6);
+            Controls.Add(lblWind);
             Controls.Add(txtDew);
             Controls.Add(label5);
-            Controls.Add(label4);
+            Controls.Add(lblTempDew);
             Controls.Add(txtTempC);
-            Controls.Add(label3);
+            Controls.Add(lblDateTime);
             Controls.Add(txtDate);
-            Controls.Add(label2);
+            Controls.Add(lblICAO);
             Controls.Add(txtID);
-            Controls.Add(label1);
+            Controls.Add(lblRaw);
             Controls.Add(txtMetarReport);
             Controls.Add(btnGetMetar);
             Controls.Add(txtAirportCode);
@@ -555,44 +562,44 @@
         private Button btnGetMetar;
         private ContextMenuStrip contextMenuStrip1;
         private TextBox txtMetarReport;
-        private Label label1;
+        private Label lblRaw;
         private TextBox txtID;
-        private Label label2;
-        private Label label3;
+        private Label lblICAO;
+        private Label lblDateTime;
         private TextBox txtDate;
-        private Label label4;
+        private Label lblTempDew;
         private TextBox txtTempC;
         private Label label5;
         private TextBox txtDew;
-        private Label label6;
+        private Label lblWind;
         private TextBox txtSpeed;
         private Label label7;
         private TextBox txtDir;
         private TextBox txtVis;
-        private Label label8;
+        private Label lblVis;
         private TextBox txtAltInHg;
-        private Label label9;
+        private Label lblAlt;
         private Label lblCat;
         private TextBox txtTime;
         private Label label10;
         private TextBox txtSkyConditions;
-        private Label label11;
-        private Label label12;
+        private Label lblSky;
+        private Label lblVersion;
         private TextBox txtGusts;
         private Label label13;
-        private Label label14;
+        private Label lblElev;
         private TextBox txtElevFeet;
         private TextBox txtElevMeter;
         private Label label15;
         private Label label16;
         private TextBox txtAltQNH;
-        private Label label17;
+        private Label lblName;
         private TextBox txtName;
         private CheckBox checkBox1;
         private TextBox txtAtis;
         private Button btnArrivalAtis;
         private Button btnDepartureAtis;
         private TextBox txtLocation;
-        private Label label18;
+        private Label lblLocation;
     }
 }
