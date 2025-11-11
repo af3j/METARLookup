@@ -11,8 +11,8 @@ namespace MetarLookup
 
     public partial class MetarForm : Form
     {
-        string arrivalAtis;
-        string departureAtis;
+        string arrivalAtis = "ATIS not available for this airport";
+        string departureAtis = "ATIS not available for this airport";
         public MetarForm()
         {
             InitializeComponent();
@@ -27,7 +27,7 @@ namespace MetarLookup
                 checkBox1.Checked = false;
             }
         }
-        
+
 
 
         static async Task<Metar> GetMetarAsync(string airportCode)
@@ -42,7 +42,7 @@ namespace MetarLookup
                 client.DefaultRequestHeaders.Add("referer", "https://www.aviationweather.gov/");
 
                 // Send a GET request to the web service's API endpoint
-                string url = "https://aviationweather.gov/cgi-bin/data/dataserver.php?requestType=retrieve&dataSource=metars&stationString=" + airportCode + " &hoursBeforeNow=3&format=xml&mostRecent=true";
+                string url = "https://aviationweather.gov/api/data/metar?ids=" + airportCode + "&hoursBeforeNow=3&format=xml&mostRecent=true";
                 HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
 
                 // Read the response as a string
@@ -65,7 +65,7 @@ namespace MetarLookup
                         metar.dewpointC = node.SelectSingleNode("dewpoint_c").InnerText.ToString();
                         if (node.SelectSingleNode("wind_dir_degrees") != null)
                         {
-                            metar.windDir = node.SelectSingleNode("wind_dir_degrees").InnerText.ToString() + "°";
+                            metar.windDir = node.SelectSingleNode("wind_dir_degrees").InnerText.ToString() + "\u00B0";
                         }
                         if (node.SelectSingleNode("wind_speed_kt") != null)
                         {
@@ -137,7 +137,9 @@ namespace MetarLookup
             }
             catch
             {
-
+                arrivalAtis = "ATIS not available for this airport";
+                departureAtis = "ATIS not available for this airport";
+                txtAtis.Text = arrivalAtis;
             }
 
             // Display the METAR weather report
@@ -146,8 +148,8 @@ namespace MetarLookup
                 txtMetarReport.Text = metar.rawText;
                 if (metar.observationTime != null)
                 {
-                    txtDate.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
-                    txtTime.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss") + " Z";
+                    txtDate.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture).ToString("yyyy-MM-dd");
+                    txtTime.Text = " " + DateTime.ParseExact(metar.observationTime, "yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture).ToUniversalTime().ToString("HH:mm:ss") + " Z";
                 }
                 txtTempC.Text = " " + metar.tempC + " C";
                 txtDew.Text = " " + metar.dewpointC + " C"; ;
@@ -203,7 +205,7 @@ namespace MetarLookup
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri("https://www.airport-data.com/api/ap_info.json?icao=" + code),
+                RequestUri = new Uri("https://airport-data.com/api/ap_info.json?icao=" + code),
 
             };
             using (var response = await client.SendAsync(request))
@@ -280,8 +282,8 @@ namespace MetarLookup
                 var body = await response.Content.ReadAsStringAsync();
                 if (body.Contains("error"))
                 {
-                    arrivalAtis = "ATIS is not available";
-                    departureAtis = "ATIS is not available";
+                    arrivalAtis = "ATIS not available for this airport";
+                    departureAtis = "ATIS not available for this airport";
                 }
                 else
                 {
@@ -331,7 +333,7 @@ namespace MetarLookup
                         textBox.Text = "";
                     }
                 }
-             }
+            }
 
 
 
@@ -353,7 +355,7 @@ namespace MetarLookup
                         Button button = (Button)control;
                         button.BackColor = Color.Black;
                         button.ForeColor = Color.White;
-                        
+
                     }
                     if (control is TextBox)
                     {
@@ -377,7 +379,7 @@ namespace MetarLookup
                         Button button = (Button)control;
                         button.BackColor = Color.LightGray;
                         button.ForeColor = Color.Black;
-                        
+
                     }
                     if (control is TextBox)
                     {
@@ -422,6 +424,11 @@ namespace MetarLookup
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void lblVersion_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

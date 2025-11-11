@@ -148,7 +148,7 @@
             lblDateTime.AutoSize = true;
             lblDateTime.Location = new Point(12, 489);
             lblDateTime.Name = "lblDateTime";
-            lblDateTime.Size = new Size(68, 15);
+            lblDateTime.Size = new Size(69, 15);
             lblDateTime.TabIndex = 8;
             lblDateTime.Text = "Date / Time";
             // 
@@ -167,7 +167,7 @@
             lblTempDew.AutoSize = true;
             lblTempDew.Location = new Point(12, 518);
             lblTempDew.Name = "lblTempDew";
-            lblTempDew.Size = new Size(98, 15);
+            lblTempDew.Size = new Size(99, 15);
             lblTempDew.TabIndex = 10;
             lblTempDew.Text = "Temp / Dewpoint";
             // 
@@ -333,7 +333,8 @@
             lblVersion.Name = "lblVersion";
             lblVersion.Size = new Size(40, 15);
             lblVersion.TabIndex = 27;
-            lblVersion.Text = "v.1.3.0";
+            lblVersion.Text = "v.1.4.0";
+            lblVersion.Click += lblVersion_Click;
             // 
             // txtGusts
             // 
@@ -435,7 +436,7 @@
             checkBox1.AutoSize = true;
             checkBox1.Location = new Point(347, 9);
             checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(89, 19);
+            checkBox1.Size = new Size(90, 19);
             checkBox1.TabIndex = 41;
             checkBox1.Text = "Dark Theme";
             checkBox1.UseVisualStyleBackColor = true;

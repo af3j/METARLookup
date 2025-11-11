@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.airport-data.com)",
+      "WebFetch(domain:airport-data.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
