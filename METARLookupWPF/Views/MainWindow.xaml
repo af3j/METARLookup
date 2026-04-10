@@ -9,10 +9,15 @@
         MinWidth="900" MinHeight="600">
 
     <Window.Resources>
+        <!-- CatBrush: converts a flight-category string (VFR/MVFR/IFR/LIFR) to a foreground Brush -->
         <conv:FlightCategoryBrushConverter x:Key="CatBrush"/>
+        <!-- CatBg: converts a flight-category string to a background Brush for the favourite chip -->
         <conv:FlightCategoryBackgroundConverter x:Key="CatBg"/>
+        <!-- BoolVis: true → Visible, false → Collapsed -->
         <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+        <!-- InvBoolVis: true → Collapsed, false → Visible (used for "no data" placeholders) -->
         <conv:InverseBoolToVisibilityConverter x:Key="InvBoolVis"/>
+        <!-- SigmetBadge: converts SIGMET count to Visibility — Collapsed when count is 0 -->
         <conv:SigmetBadgeConverter x:Key="SigmetBadge"/>
     </Window.Resources>
 
@@ -54,7 +59,7 @@
                         Style="{DynamicResource AccentButtonStyle}"
                         VerticalAlignment="Center"/>
 
-                <!-- Favorites Strip -->
+                <!-- Favorites Strip: each chip is coloured by the flight category at save-time -->
                 <ItemsControl Grid.Column="3" ItemsSource="{Binding Favorites}" Margin="16,0,0,0"
                               VerticalAlignment="Center">
                     <ItemsControl.ItemsPanel>
@@ -64,9 +69,12 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
+                            <!-- Each chip binds its background to the saved FlightCategory via CatBg -->
                             <Border CornerRadius="4" Padding="8,3" Margin="0,0,6,0" Cursor="Hand"
                                     Background="{Binding FlightCategory, Converter={StaticResource CatBg}}">
                                 <Border.InputBindings>
+                                    <!-- RelativeSource walk-up is needed because DataContext here is FavoriteStation,
+                                         not MainViewModel — the command lives on the window's DataContext -->
                                     <MouseBinding MouseAction="LeftClick"
                                                   Command="{Binding DataContext.SelectFavoriteCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                   CommandParameter="{Binding}"/>
@@ -93,13 +101,13 @@
             </Grid>
         </Border>
 
-        <!-- Error Banner -->
+        <!-- Error Banner: overlays Row 1; visible only when HasError is true -->
         <Border Grid.Row="1" Background="#CC3333" Padding="12,8"
                 Visibility="{Binding HasError, Converter={StaticResource BoolVis}}">
             <TextBlock Text="{Binding ErrorMessage}" Foreground="White" FontSize="13"/>
         </Border>
 
-        <!-- Busy Indicator -->
+        <!-- Busy Indicator: shares Row 1 with the error banner; visible only during async fetches -->
         <Border Grid.Row="1" Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}"
                 Padding="12,8" Visibility="{Binding IsBusy, Converter={StaticResource BoolVis}}">
             <StackPanel Orientation="Horizontal">
@@ -125,10 +133,12 @@
                 <views:MapView x:Name="MapViewControl"/>
             </TabItem>
 
-            <TabItem Header="Charts">
+            <TabItem Header="Airport Charts">
                 <views:ChartsView DataContext="{Binding ChartsVm}"/>
             </TabItem>
 
+            <!-- SIGMETs tab: custom header with a red count badge when advisories are active.
+                 The badge uses SigmetBadgeConverter which returns Collapsed when count == 0. -->
             <TabItem>
                 <TabItem.Header>
                     <Grid>

@@ -6,7 +6,12 @@
       "Bash(dotnet new:*)",
       "Bash(dotnet sln:*)",
       "Bash(dotnet add:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(grep -c \"///\" \"C:/Users/af3j/source/repos/MetarLookup/METARLookupWPF/Models/Airport.cs\")",
+      "Bash(grep -c \"///\" \"C:/Users/af3j/source/repos/MetarLookup/METARLookupWPF/Models/Metar.cs\")",
+      "Bash(grep -c \"///\" \"C:/Users/af3j/source/repos/MetarLookup/METARLookupWPF/Models/Taf.cs\")",
+      "Bash(grep -c \"///\" \"C:/Users/af3j/source/repos/MetarLookup/METARLookupWPF/Services/AvWeatherService.cs\")",
+      "Bash(grep -c \"///\" \"C:/Users/af3j/source/repos/MetarLookup/METARLookupWPF/ViewModels/MainViewModel.cs\")"
     ],
     "deny": [],
     "ask": []

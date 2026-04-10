@@ -1,105 +1,92 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using LiveChartsCore;
-using LiveChartsCore.Defaults;
-using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.Painting;
+using CommunityToolkit.Mvvm.Input;
 using METARLookupWPF.Models;
-using SkiaSharp;
+using METARLookupWPF.Services;
 
 namespace METARLookupWPF.ViewModels;
 
-public partial class ChartsViewModel : ObservableObject
+/// <summary>
+/// View-model for the Airport Charts tab. Manages loading FAA d-TPP chart groups
+/// for the current airport and coordinating PDF navigation with <see cref="ChartsView"/>
+/// via the <see cref="NavigateToPdf"/> event.
+/// </summary>
+public partial class ChartsViewModel(IFaaChartsService chartsService) : ObservableObject
 {
-    [ObservableProperty] private ISeries[] _windSeries = [];
-    [ObservableProperty] private ISeries[] _visSeries = [];
-    [ObservableProperty] private ISeries[] _tempSeries = [];
-    [ObservableProperty] private Axis[] _windXAxes = [new Axis { Labels = [] }];
-    [ObservableProperty] private Axis[] _visXAxes = [new Axis { Labels = [] }];
-    [ObservableProperty] private Axis[] _tempXAxes = [new Axis { Labels = [] }];
-    [ObservableProperty] private bool _hasData;
+    /// <summary>
+    /// Chart groups displayed in the left-panel tree (e.g. "Instrument Approaches", "Departures").
+    /// Uses ObservableCollection so the ItemsControl in the view updates incrementally.
+    /// </summary>
+    [ObservableProperty] private ObservableCollection<ChartGroup> _groups     = [];
 
-    public void Load(List<Metar> history)
+    /// <summary>The chart the user most recently clicked; drives PDF navigation.</summary>
+    [ObservableProperty] private AirportChart?                    _selectedChart;
+
+    /// <summary>True when at least one chart group is available for the current airport.</summary>
+    [ObservableProperty] private bool                             _hasCharts;
+
+    /// <summary>Controls the "select a chart" placeholder overlay in the right panel.</summary>
+    [ObservableProperty] private bool                             _hasPdfOpen;
+
+    /// <summary>True while the charts metafile is being fetched; drives the left-panel progress ring.</summary>
+    [ObservableProperty] private bool                             _isLoading;
+
+    /// <summary>Status message shown below the progress ring when no charts are loaded yet.</summary>
+    [ObservableProperty] private string                           _statusText  = "Select an airport to view charts.";
+
+    /// <summary>
+    /// Raised whenever a chart is selected and the PDF viewer should navigate to a new URL.
+    /// The view subscribes to this event in <see cref="ChartsView.OnDataContextChanged"/>
+    /// so the ViewModel stays unaware of the WebView2 control.
+    /// </summary>
+    public event Action<string>? NavigateToPdf;
+
+    /// <summary>Bound to the click command of each chart button in the left panel list.</summary>
+    [RelayCommand]
+    private void SelectChart(AirportChart chart) => SelectedChart = chart;
+
+    /// <summary>
+    /// Partial method called automatically when SelectedChart changes.
+    /// Fires the NavigateToPdf event so ChartsView can forward the URL to WebView2.
+    /// Pattern-matching on PdfUrl length guards against charts with empty URLs.
+    /// </summary>
+    partial void OnSelectedChartChanged(AirportChart? value)
     {
-        if (history.Count == 0)
+        HasPdfOpen = value != null;
+        if (value?.PdfUrl is { Length: > 0 } url)
+            NavigateToPdf?.Invoke(url);
+    }
+
+    /// <summary>
+    /// Fetches chart groups for <paramref name="icao"/> from the FAA d-TPP metafile.
+    /// Called lazily when the user first switches to the Charts tab (not on every lookup),
+    /// because downloading the large metafile XML is expensive.
+    /// </summary>
+    public async Task LoadAsync(string icao, CancellationToken ct = default)
+    {
+        IsLoading = true;
+        StatusText = $"Loading charts for {icao}…";
+        HasCharts  = false;
+        HasPdfOpen = false;
+        Groups.Clear();
+        SelectedChart = null;
+
+        try
         {
-            HasData = false;
-            WindSeries = [];
-            VisSeries = [];
-            TempSeries = [];
-            return;
+            var groups = await chartsService.GetAirportChartsAsync(icao, ct);
+
+            // Add groups individually so the ItemsControl animates each one in as it arrives.
+            foreach (var g in groups) Groups.Add(g);
+
+            HasCharts  = groups.Count > 0;
+            StatusText = HasCharts
+                ? $"{groups.Sum(g => g.Charts.Count)} charts for {icao}"
+                : $"No FAA charts found for {icao}. (International airports may not be listed.)";
         }
-
-        var ordered = history.OrderBy(m => m.ObservationTime).ToList();
-        var labels = ordered.Select(m => m.ObservationTime?.ToString("HH:mm") ?? "").ToArray();
-
-        var windValues = ordered.Select(m => m.WindSpeedKt.HasValue ? new ObservableValue(m.WindSpeedKt.Value) : new ObservableValue(null)).ToList();
-        var gustValues = ordered.Select(m => m.WindGustsKt is > 0 ? new ObservableValue(m.WindGustsKt.Value) : new ObservableValue(null)).ToList();
-        var visValues = ordered.Select(m => m.VisibilityStatuteMi.HasValue ? new ObservableValue(m.VisibilityStatuteMi.Value) : new ObservableValue(null)).ToList();
-        var tempValues = ordered.Select(m => m.TempC.HasValue ? new ObservableValue(m.TempC.Value) : new ObservableValue(null)).ToList();
-        var dewValues = ordered.Select(m => m.DewpointC.HasValue ? new ObservableValue(m.DewpointC.Value) : new ObservableValue(null)).ToList();
-
-        WindSeries =
-        [
-            new LineSeries<ObservableValue>
-            {
-                Name = "Wind (kt)",
-                Values = windValues,
-                Stroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
-                Fill = null,
-                GeometrySize = 4,
-                GeometryStroke = new SolidColorPaint(SKColors.DeepSkyBlue, 2),
-            },
-            new LineSeries<ObservableValue>
-            {
-                Name = "Gusts (kt)",
-                Values = gustValues,
-                Stroke = new SolidColorPaint(SKColors.OrangeRed, 2),
-                Fill = null,
-                GeometrySize = 4,
-                GeometryStroke = new SolidColorPaint(SKColors.OrangeRed, 2),
-            }
-        ];
-
-        VisSeries =
-        [
-            new LineSeries<ObservableValue>
-            {
-                Name = "Visibility (SM)",
-                Values = visValues,
-                Stroke = new SolidColorPaint(SKColors.LimeGreen, 2),
-                Fill = new SolidColorPaint(SKColors.LimeGreen.WithAlpha(40)),
-                GeometrySize = 4,
-                GeometryStroke = new SolidColorPaint(SKColors.LimeGreen, 2),
-            }
-        ];
-
-        TempSeries =
-        [
-            new LineSeries<ObservableValue>
-            {
-                Name = "Temp (°C)",
-                Values = tempValues,
-                Stroke = new SolidColorPaint(SKColors.Tomato, 2),
-                Fill = null,
-                GeometrySize = 4,
-                GeometryStroke = new SolidColorPaint(SKColors.Tomato, 2),
-            },
-            new LineSeries<ObservableValue>
-            {
-                Name = "Dewpoint (°C)",
-                Values = dewValues,
-                Stroke = new SolidColorPaint(SKColors.CornflowerBlue, 2),
-                Fill = null,
-                GeometrySize = 4,
-                GeometryStroke = new SolidColorPaint(SKColors.CornflowerBlue, 2),
-            }
-        ];
-
-        var labelAxis = new Axis { Labels = labels, LabelsRotation = -30 };
-        WindXAxes = [labelAxis];
-        VisXAxes = [new Axis { Labels = labels, LabelsRotation = -30 }];
-        TempXAxes = [new Axis { Labels = labels, LabelsRotation = -30 }];
-
-        HasData = true;
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            StatusText = $"Error loading charts: {ex.Message}";
+        }
+        finally { IsLoading = false; }
     }
 }

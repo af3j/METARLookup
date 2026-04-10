@@ -1,44 +1,88 @@
 <UserControl x:Class="METARLookupWPF.Views.ChartsView"
+             x:Name="Root"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
              xmlns:conv="clr-namespace:METARLookupWPF.Converters">
 
     <UserControl.Resources>
-        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
-        <conv:InverseBoolToVisibilityConverter x:Key="InvBoolVis"/>
+        <!-- BoolVis: true → Visible, false → Collapsed -->
+        <conv:BoolToVisibilityConverter         x:Key="BoolVis"/>
+        <!-- InvBoolVis: true → Collapsed, false → Visible (used for the "no charts" placeholder) -->
+        <conv:InverseBoolToVisibilityConverter  x:Key="InvBoolVis"/>
     </UserControl.Resources>
 
-    <Grid Margin="16">
-        <TextBlock Text="No historical data available. Perform a lookup first."
-                   Visibility="{Binding HasData, Converter={StaticResource InvBoolVis}}"
-                   FontSize="14" Opacity="0.6"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <!-- Two-column layout: 230px chart list on the left, PDF viewer filling the rest -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      Visibility="{Binding HasData, Converter={StaticResource BoolVis}}">
-            <StackPanel>
-                <TextBlock Text="WIND SPEED &amp; GUSTS (last 24h)" FontSize="10" FontWeight="Bold"
-                           Opacity="0.5" Margin="0,0,0,4"/>
-                <lvc:CartesianChart Series="{Binding WindSeries}"
-                                    XAxes="{Binding WindXAxes}"
-                                    Height="180" Margin="0,0,0,16"
-                                    TooltipPosition="Top"/>
+        <!-- ── Left panel: chart list ──────────────────────────────────── -->
+        <Border Grid.Column="0" BorderThickness="0,0,1,0"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+            <Grid>
+                <!-- Shown when HasCharts is false (loading or no charts available).
+                     ProgressRing is active only while IsLoading is true; afterwards
+                     StatusText explains why there are no charts. -->
+                <StackPanel VerticalAlignment="Center" Margin="16"
+                            Visibility="{Binding HasCharts, Converter={StaticResource InvBoolVis}}">
+                    <ui:ProgressRing IsActive="{Binding IsLoading}" Width="28" Height="28"
+                                     HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                    <TextBlock Text="{Binding StatusText}" TextWrapping="Wrap"
+                               FontSize="12" Opacity="0.6" TextAlignment="Center"/>
+                </StackPanel>
 
-                <TextBlock Text="VISIBILITY (last 24h)" FontSize="10" FontWeight="Bold"
-                           Opacity="0.5" Margin="0,0,0,4"/>
-                <lvc:CartesianChart Series="{Binding VisSeries}"
-                                    XAxes="{Binding VisXAxes}"
-                                    Height="180" Margin="0,0,0,16"
-                                    TooltipPosition="Top"/>
+                <!-- Chart groups: each ChartGroup is an expandable section (APD, IAP, DP, etc.) -->
+                <ScrollViewer Visibility="{Binding HasCharts, Converter={StaticResource BoolVis}}"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Groups}" Margin="4">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <!-- Each group (e.g. "Instrument Approaches") starts expanded -->
+                                <Expander Header="{Binding Category}" IsExpanded="True" Margin="0,4,0,0">
+                                    <ItemsControl ItemsSource="{Binding Charts}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <!-- ElementName=Root is used instead of RelativeSource AncestorType
+                                                     because DataContext is AirportChart here (two levels of nested
+                                                     DataTemplate inside an Expander), and AncestorType lookup can
+                                                     fail to find the UserControl through the Expander's visual tree. -->
+                                                <Button HorizontalAlignment="Stretch"
+                                                        HorizontalContentAlignment="Left"
+                                                        Padding="6,4" Margin="0,1"
+                                                        Command="{Binding DataContext.SelectChartCommand,
+                                                            ElementName=Root}"
+                                                        CommandParameter="{Binding}">
+                                                    <TextBlock Text="{Binding Name}"
+                                                               TextWrapping="Wrap" FontSize="11"/>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Expander>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
 
-                <TextBlock Text="TEMPERATURE &amp; DEWPOINT (last 24h)" FontSize="10" FontWeight="Bold"
-                           Opacity="0.5" Margin="0,0,0,4"/>
-                <lvc:CartesianChart Series="{Binding TempSeries}"
-                                    XAxes="{Binding TempXAxes}"
-                                    Height="180"
-                                    TooltipPosition="Top"/>
-            </StackPanel>
-        </ScrollViewer>
+        <!-- ── Right panel: PDF viewer ─────────────────────────────────── -->
+        <Grid Grid.Column="1">
+            <!-- WebView2 is always present in the visual tree (not toggled by visibility)
+                 so EnsureCoreWebView2Async starts immediately when the tab loads.
+                 The placeholder overlay sits on top and hides it until a chart is selected. -->
+            <wv2:WebView2 x:Name="ChartWebView"/>
+            <!-- Placeholder overlay: visible when no chart PDF is open (HasPdfOpen = false) -->
+            <Border Background="{DynamicResource SystemControlPageBackgroundAltHighBrush}"
+                    Visibility="{Binding HasPdfOpen, Converter={StaticResource InvBoolVis}}">
+                <TextBlock Text="Select a chart from the list to view it here."
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Opacity="0.5" FontSize="14"/>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
