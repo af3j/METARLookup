@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:www.airport-data.com)",
-      "WebFetch(domain:airport-data.com)"
+      "WebFetch(domain:airport-data.com)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet sln:*)",
+      "Bash(dotnet add:*)",
+      "Bash(dotnet build:*)"
     ],
     "deny": [],
     "ask": []

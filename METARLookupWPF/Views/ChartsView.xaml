@@ -1,0 +1,44 @@
+<UserControl x:Class="METARLookupWPF.Views.ChartsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:conv="clr-namespace:METARLookupWPF.Converters">
+
+    <UserControl.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+        <conv:InverseBoolToVisibilityConverter x:Key="InvBoolVis"/>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <TextBlock Text="No historical data available. Perform a lookup first."
+                   Visibility="{Binding HasData, Converter={StaticResource InvBoolVis}}"
+                   FontSize="14" Opacity="0.6"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding HasData, Converter={StaticResource BoolVis}}">
+            <StackPanel>
+                <TextBlock Text="WIND SPEED &amp; GUSTS (last 24h)" FontSize="10" FontWeight="Bold"
+                           Opacity="0.5" Margin="0,0,0,4"/>
+                <lvc:CartesianChart Series="{Binding WindSeries}"
+                                    XAxes="{Binding WindXAxes}"
+                                    Height="180" Margin="0,0,0,16"
+                                    TooltipPosition="Top"/>
+
+                <TextBlock Text="VISIBILITY (last 24h)" FontSize="10" FontWeight="Bold"
+                           Opacity="0.5" Margin="0,0,0,4"/>
+                <lvc:CartesianChart Series="{Binding VisSeries}"
+                                    XAxes="{Binding VisXAxes}"
+                                    Height="180" Margin="0,0,0,16"
+                                    TooltipPosition="Top"/>
+
+                <TextBlock Text="TEMPERATURE &amp; DEWPOINT (last 24h)" FontSize="10" FontWeight="Bold"
+                           Opacity="0.5" Margin="0,0,0,4"/>
+                <lvc:CartesianChart Series="{Binding TempSeries}"
+                                    XAxes="{Binding TempXAxes}"
+                                    Height="180"
+                                    TooltipPosition="Top"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

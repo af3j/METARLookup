@@ -1,0 +1,109 @@
+<UserControl x:Class="METARLookupWPF.Views.CalculatorsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019">
+
+    <UserControl.Resources>
+        <Style x:Key="CalcCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+        </Style>
+        <Style x:Key="ResultStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+        </Style>
+        <Style x:Key="CardHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Opacity" Value="0.6"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
+        <UniformGrid Columns="2">
+
+            <!-- Density Altitude -->
+            <Border Style="{StaticResource CalcCard}" Margin="0,0,6,12">
+                <StackPanel>
+                    <TextBlock Text="Density Altitude" Style="{StaticResource CardHeader}"/>
+                    <TextBlock Text="Pressure Altitude (ft)" Style="{StaticResource FieldLabel}"/>
+                    <ui:NumberBox Value="{Binding PressureAltFt, Mode=TwoWay}"
+                                  SpinButtonPlacementMode="Inline" Margin="0,0,0,10"
+                                  Minimum="-2000" Maximum="60000"/>
+                    <TextBlock Text="Outside Air Temperature (°C)" Style="{StaticResource FieldLabel}"/>
+                    <ui:NumberBox Value="{Binding OatCelsius, Mode=TwoWay}"
+                                  SpinButtonPlacementMode="Inline" Margin="0,0,0,10"
+                                  Minimum="-80" Maximum="60"/>
+                    <Separator Margin="0,4,0,8"/>
+                    <TextBlock Text="Density Altitude" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="{Binding DensityAltResult}" Style="{StaticResource ResultStyle}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Pressure Altitude -->
+            <Border Style="{StaticResource CalcCard}" Margin="6,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="Pressure Altitude" Style="{StaticResource CardHeader}"/>
+                    <TextBlock Text="Field Elevation (ft MSL)" Style="{StaticResource FieldLabel}"/>
+                    <ui:NumberBox Value="{Binding FieldElevationFt, Mode=TwoWay}"
+                                  SpinButtonPlacementMode="Inline" Margin="0,0,0,10"
+                                  Minimum="-2000" Maximum="20000"/>
+                    <TextBlock Text="Altimeter Setting (inHg)" Style="{StaticResource FieldLabel}"/>
+                    <ui:NumberBox Value="{Binding AltimeterInHg, Mode=TwoWay}"
+                                  SpinButtonPlacementMode="Inline" Margin="0,0,0,10"
+                                  Minimum="27" Maximum="32" SmallChange="0.01"/>
+                    <Separator Margin="0,4,0,8"/>
+                    <TextBlock Text="Pressure Altitude" Style="{StaticResource FieldLabel}"/>
+                    <TextBlock Text="{Binding PressureAltResult}" Style="{StaticResource ResultStyle}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Crosswind -->
+            <Border Style="{StaticResource CalcCard}" Grid.ColumnSpan="2" Margin="0">
+                <StackPanel>
+                    <TextBlock Text="Crosswind / Headwind Component" Style="{StaticResource CardHeader}"/>
+                    <UniformGrid Columns="3">
+                        <StackPanel Margin="0,0,8,0">
+                            <TextBlock Text="Wind Direction (°)" Style="{StaticResource FieldLabel}"/>
+                            <ui:NumberBox Value="{Binding WindDirectionDeg, Mode=TwoWay}"
+                                          SpinButtonPlacementMode="Inline"
+                                          Minimum="0" Maximum="360"/>
+                        </StackPanel>
+                        <StackPanel Margin="8,0">
+                            <TextBlock Text="Wind Speed (kt)" Style="{StaticResource FieldLabel}"/>
+                            <ui:NumberBox Value="{Binding WindSpeedKt, Mode=TwoWay}"
+                                          SpinButtonPlacementMode="Inline"
+                                          Minimum="0" Maximum="200"/>
+                        </StackPanel>
+                        <StackPanel Margin="8,0,0,0">
+                            <TextBlock Text="Runway Heading (°)" Style="{StaticResource FieldLabel}"/>
+                            <ui:NumberBox Value="{Binding RunwayHeadingDeg, Mode=TwoWay}"
+                                          SpinButtonPlacementMode="Inline"
+                                          Minimum="0" Maximum="360"/>
+                        </StackPanel>
+                    </UniformGrid>
+                    <Separator Margin="0,12,0,8"/>
+                    <UniformGrid Columns="2">
+                        <StackPanel>
+                            <TextBlock Text="Headwind" Style="{StaticResource FieldLabel}"/>
+                            <TextBlock Text="{Binding HeadwindResult}" Style="{StaticResource ResultStyle}"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Crosswind" Style="{StaticResource FieldLabel}"/>
+                            <TextBlock Text="{Binding CrosswindResult}" Style="{StaticResource ResultStyle}"/>
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+        </UniformGrid>
+    </ScrollViewer>
+</UserControl>

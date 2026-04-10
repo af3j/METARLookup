@@ -1,0 +1,163 @@
+<UserControl x:Class="METARLookupWPF.Views.MetarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:conv="clr-namespace:METARLookupWPF.Converters">
+
+    <UserControl.Resources>
+        <conv:FlightCategoryBrushConverter x:Key="CatBrush"/>
+        <conv:FlightCategoryBackgroundConverter x:Key="CatBg"/>
+        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+
+        <Style x:Key="TileStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumBrush}"/>
+        </Style>
+        <Style x:Key="TileLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+        <Style x:Key="TileValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Flight Category Banner -->
+            <Border Grid.Row="0" CornerRadius="8" Padding="16,12" Margin="0,0,0,12"
+                    Background="{Binding FlightCategoryText, Converter={StaticResource CatBg}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" CornerRadius="6" Padding="14,6" Margin="0,0,16,0"
+                            Background="{Binding FlightCategoryText, Converter={StaticResource CatBrush}}">
+                        <TextBlock Text="{Binding FlightCategoryText}" FontSize="22" FontWeight="Bold"
+                                   Foreground="White"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding AirportName}" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding AirportLocation}" FontSize="12" Opacity="0.7"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding ObsDate}" FontSize="12" Opacity="0.7" HorizontalAlignment="Right"/>
+                        <TextBlock Text="{Binding ObsTime}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Raw METAR -->
+            <Border Grid.Row="1" CornerRadius="6" Padding="12" Margin="0,0,0,12"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <StackPanel>
+                    <TextBlock Text="RAW METAR" Style="{StaticResource TileLabelStyle}"/>
+                    <TextBlock Text="{Binding RawMetar}" FontFamily="Consolas" FontSize="13"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Weather Tiles Grid -->
+            <UniformGrid Grid.Row="2" Columns="3" Margin="0,0,0,12">
+                <Border Style="{StaticResource TileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="TEMPERATURE" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Style="{StaticResource TileValueStyle}">
+                            <Run Text="{Binding TempC, Mode=OneWay}"/><Run Text=" °C"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource TileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="DEWPOINT" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Style="{StaticResource TileValueStyle}">
+                            <Run Text="{Binding DewC, Mode=OneWay}"/><Run Text=" °C"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource TileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="VISIBILITY" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Style="{StaticResource TileValueStyle}">
+                            <Run Text="{Binding Visibility, Mode=OneWay}"/><Run Text=" SM"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource TileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="WIND DIRECTION" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Text="{Binding WindDir, Mode=OneWay}" Style="{StaticResource TileValueStyle}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource TileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="WIND SPEED" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Style="{StaticResource TileValueStyle}">
+                            <Run Text="{Binding WindSpeed, Mode=OneWay}"/><Run Text=" kt "/>
+                            <Run Text="{Binding WindGusts, Mode=OneWay}" Foreground="OrangeRed"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource TileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="ALTIMETER" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Style="{StaticResource TileValueStyle}">
+                            <Run Text="{Binding AltInHg, Mode=OneWay}"/><Run Text=" inHg"/>
+                        </TextBlock>
+                        <TextBlock FontSize="11" Opacity="0.6">
+                            <Run Text="{Binding AltQnh, Mode=OneWay}"/><Run Text=" hPa"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource TileStyle}">
+                    <StackPanel>
+                        <TextBlock Text="ELEVATION" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Style="{StaticResource TileValueStyle}">
+                            <Run Text="{Binding ElevFeet, Mode=OneWay}"/><Run Text=" ft"/>
+                        </TextBlock>
+                        <TextBlock FontSize="11" Opacity="0.6">
+                            <Run Text="{Binding ElevMeters, Mode=OneWay}"/><Run Text=" m"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource TileStyle}" Grid.Column="1">
+                    <StackPanel>
+                        <TextBlock Text="SKY CONDITIONS" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Text="{Binding SkyConditions}" FontFamily="Consolas" FontSize="12"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- ATIS Section -->
+            <Border Grid.Row="3" CornerRadius="6" Padding="12"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <StackPanel>
+                    <TextBlock Text="ATIS" Style="{StaticResource TileLabelStyle}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button Content="Arrival" Margin="0,0,8,0"
+                                Command="{Binding ShowAtisCommand}" CommandParameter="arr"/>
+                        <Button Content="Departure"
+                                Command="{Binding ShowAtisCommand}" CommandParameter="dep"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding AtisText}" FontFamily="Consolas" FontSize="11"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

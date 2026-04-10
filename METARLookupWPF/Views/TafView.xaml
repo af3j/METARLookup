@@ -1,0 +1,83 @@
+<UserControl x:Class="METARLookupWPF.Views.TafView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:conv="clr-namespace:METARLookupWPF.Converters"
+             xmlns:vm="clr-namespace:METARLookupWPF.ViewModels">
+
+    <UserControl.Resources>
+        <conv:FlightCategoryBrushConverter x:Key="CatBrush"/>
+        <conv:FlightCategoryBackgroundConverter x:Key="CatBg"/>
+        <conv:BoolToVisibilityConverter x:Key="BoolVis"/>
+        <conv:InverseBoolToVisibilityConverter x:Key="InvBoolVis"/>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <!-- No TAF message -->
+        <TextBlock Text="No TAF available for this station."
+                   Visibility="{Binding HasTaf, Converter={StaticResource InvBoolVis}}"
+                   FontSize="14" Opacity="0.6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <StackPanel Visibility="{Binding HasTaf, Converter={StaticResource BoolVis}}">
+            <!-- Header -->
+            <Border CornerRadius="6" Padding="12" Margin="0,0,0,12"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="TERMINAL AERODROME FORECAST" FontSize="10" FontWeight="Bold" Opacity="0.5" Margin="0,0,0,2"/>
+                        <TextBlock Text="{Binding RawTaf}" FontFamily="Consolas" FontSize="11" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding IssueTime, StringFormat='Issued: {0}'}" FontSize="11" Opacity="0.7"/>
+                        <TextBlock Text="{Binding ValidPeriod, StringFormat='Valid: {0}'}" FontSize="11" Opacity="0.7"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Forecast Periods -->
+            <ItemsControl ItemsSource="{Binding Periods}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:TafPeriodVm}">
+                        <Border CornerRadius="6" Padding="12" Margin="0,0,0,6"
+                                Background="{Binding FlightCategory, Converter={StaticResource CatBg}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" MinWidth="110"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="{Binding TimeRange}" FontSize="13" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding ChangeIndicator}" FontSize="10" Opacity="0.6"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
+                                    <StackPanel Margin="0,0,20,0">
+                                        <TextBlock Text="WIND" FontSize="9" Opacity="0.5" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Wind}" FontSize="13"/>
+                                    </StackPanel>
+                                    <StackPanel Margin="0,0,20,0">
+                                        <TextBlock Text="VIS" FontSize="9" Opacity="0.5" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Visibility}" FontSize="13"/>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="SKY" FontSize="9" Opacity="0.5" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Sky}" FontSize="13"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Border Grid.Column="2" CornerRadius="4" Padding="8,4" VerticalAlignment="Center"
+                                        Background="{Binding FlightCategory, Converter={StaticResource CatBrush}}">
+                                    <TextBlock Text="{Binding FlightCategory}" Foreground="White"
+                                               FontSize="12" FontWeight="Bold"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </Grid>
+</UserControl>
