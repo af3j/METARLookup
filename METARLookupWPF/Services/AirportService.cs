@@ -19,8 +19,8 @@ public interface IAirportService
 }
 
 /// <summary>
-/// Implements <see cref="IAirportService"/> using the airport-data.com JSON REST API.
-/// Coordinates returned by this API are strings that must be parsed to doubles.
+/// Retrieves airport metadata by trying aviationweather.gov first, then falling back to
+/// airport-data.com if the primary source returns nothing.
 /// </summary>
 public class AirportService(HttpClient http) : IAirportService
 {
@@ -29,22 +29,60 @@ public class AirportService(HttpClient http) : IAirportService
     /// <inheritdoc/>
     public async Task<Airport?> GetAirportAsync(string icao, CancellationToken ct = default)
     {
+        return await TryAirportDataComAsync(icao, ct)
+        ?? await TryAvWeatherAsync(icao, ct);
+    }
+
+    // ── Fallback: aviationweather.gov ─────────────────────────────────────────
+
+    private async Task<Airport?> TryAvWeatherAsync(string icao, CancellationToken ct)
+    {
         try
         {
-            // Add a tighter 5-second timeout so a slow airport lookup doesn't block
-            // the UI while the METAR (more important) is waiting.
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             cts.CancelAfter(TimeSpan.FromSeconds(5));
 
-            using var response = await http.GetAsync($"https://airport-data.com/api/ap_info.json?icao={icao}", cts.Token);
+            using var response = await http.GetAsync(
+                $"https://aviationweather.gov/api/data/airport?ids={icao}&format=json", cts.Token);
             if (!response.IsSuccessStatusCode) return null;
 
             var json = await response.Content.ReadAsStringAsync(cts.Token);
-            // Deserialize into the private DTO whose field names match the JSON keys.
-            var raw = JsonSerializer.Deserialize<AirportRaw>(json, JsonOpts);
+            var list = JsonSerializer.Deserialize<List<AvwRaw>>(json, JsonOpts);
+            var raw = list?.FirstOrDefault();
             if (raw == null) return null;
 
-            // Map the raw DTO to the public Airport model, parsing string coordinates to doubles.
+            return new Airport
+            {
+                Icao = raw.Id,
+                Iata = raw.Iata,
+                Name = raw.Name,
+                Location = FormatLocation(raw.City, raw.State, raw.Country),
+                City = raw.City,
+                Country = raw.Country,
+                Latitude = raw.Lat,
+                Longitude = raw.Lon,
+            };
+        }
+        catch { return null; }
+    }
+
+    // ── Primary: airport-data.com ───────────────────────────────────────────
+
+    private async Task<Airport?> TryAirportDataComAsync(string icao, CancellationToken ct)
+    {
+        try
+        {
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+
+            using var response = await http.GetAsync(
+                $"https://airport-data.com/api/ap_info.json?icao={icao}", cts.Token);
+            if (!response.IsSuccessStatusCode) return null;
+
+            var json = await response.Content.ReadAsStringAsync(cts.Token);
+            var raw = JsonSerializer.Deserialize<AdcRaw>(json, JsonOpts);
+            if (raw == null) return null;
+
             return new Airport
             {
                 Icao = raw.Icao,
@@ -61,27 +99,42 @@ public class AirportService(HttpClient http) : IAirportService
                 Uct = TryParseInt(raw.Uct),
             };
         }
-        catch
-        {
-            // Swallow all exceptions (network errors, parse errors, cancellation) and
-            // return null so the app degrades gracefully when airport data is unavailable.
-            return null;
-        }
+        catch { return null; }
     }
 
-    /// <summary>Parses a coordinate string with invariant culture; returns null if invalid.</summary>
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private static string? FormatLocation(string? city, string? state, string? country)
+    {
+        var parts = new[] { city, state }.Where(s => !string.IsNullOrWhiteSpace(s));
+        var result = string.Join(", ", parts);
+        return string.IsNullOrEmpty(result) ? country : result;
+    }
+
     private static double? TryParseDouble(string? s) =>
-        double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var v) ? v : null;
+        double.TryParse(s, System.Globalization.NumberStyles.Any,
+            System.Globalization.CultureInfo.InvariantCulture, out var v) ? v : null;
 
     private static int? TryParseInt(string? s) =>
         int.TryParse(s, out var v) ? v : null;
 
-    /// <summary>
-    /// Private DTO whose property names match the airport-data.com JSON response exactly.
-    /// Lat/lon are returned as strings (may include trailing spaces or be empty), so they
-    /// are kept as strings here and converted in the mapping step above.
-    /// </summary>
-    private class AirportRaw
+    // ── DTOs ─────────────────────────────────────────────────────────────────
+
+    /// <summary>aviationweather.gov airport JSON fields.</summary>
+    private class AvwRaw
+    {
+        public string? Id { get; set; }
+        public string? Iata { get; set; }
+        public string? Name { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? Country { get; set; }
+        public double? Lat { get; set; }
+        public double? Lon { get; set; }
+    }
+
+    /// <summary>airport-data.com JSON fields (lat/lon returned as strings).</summary>
+    private class AdcRaw
     {
         public string? Icao { get; set; }
         public string? Iata { get; set; }

@@ -46,6 +46,7 @@ public partial class App : Application
         services.AddSingleton<IAirportService, AirportService>();
         services.AddSingleton<IAtisService, AtisService>();
         services.AddSingleton<IFaaChartsService, FaaChartsService>();
+        services.AddSingleton<IUserSettingsService, UserSettingsService>();
 
         // ── ViewModels ────────────────────────────────────────────────────────
         // Child VMs are registered before MainViewModel because MainViewModel

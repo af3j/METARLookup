@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ModernWpf;
+using METARLookupWPF.Services;
 using METARLookupWPF.ViewModels;
 
 namespace METARLookupWPF.Views;
@@ -14,30 +15,46 @@ namespace METARLookupWPF.Views;
 public partial class MainWindow : Window
 {
     private readonly MainViewModel _vm;
+    private readonly IUserSettingsService _settingsService;
 
     /// <summary>
-    /// Constructor receives the view-model via dependency injection (registered in App.xaml.cs).
+    /// Constructor receives the view-model and settings service via dependency injection.
     /// Sets DataContext so all XAML bindings resolve against MainViewModel.
     /// </summary>
-    public MainWindow(MainViewModel vm)
+    public MainWindow(MainViewModel vm, IUserSettingsService settingsService)
     {
         InitializeComponent();
         _vm = vm;
+        _settingsService = settingsService;
         DataContext = vm;
 
-        // Sync the dark-mode toggle with whatever theme is active at startup.
-        // Must run after Loaded because ThemeManager.Current is not ready until then.
+        // Restore the persisted theme on startup. Unsubscribe/resubscribe around the
+        // programmatic IsOn set to prevent ThemeSwitch_Toggled from firing during init.
         Loaded += (_, _) =>
-            ThemeSwitch.IsOn = ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark;
+        {
+            var settings = _settingsService.Load();
+            ThemeManager.Current.ApplicationTheme =
+                settings.IsDarkTheme ? ApplicationTheme.Dark : ApplicationTheme.Light;
+            ThemeSwitch.Checked -= ThemeSwitch_Toggled;
+            ThemeSwitch.Unchecked -= ThemeSwitch_Toggled;
+            ThemeSwitch.IsChecked = settings.IsDarkTheme;
+            ThemeSwitch.Checked += ThemeSwitch_Toggled;
+            ThemeSwitch.Unchecked += ThemeSwitch_Toggled;
+        };
 
         // When NearbyMetars is updated (the last step of FetchAllAsync), automatically
         // refresh the map if the Map tab is currently visible.
-        // NearbyMetars is not an [ObservableProperty] collection so it fires a plain
-        // PropertyChanged event, which we listen for here.
         vm.PropertyChanged += async (_, e) =>
         {
             if (e.PropertyName == nameof(MainViewModel.NearbyMetars) && MainTabs.SelectedIndex == 2)
-                await MapViewControl.ShowAirportAsync(_vm.CurrentLat, _vm.CurrentLon, _vm.NearbyMetars);
+                await MapViewControl.ShowAirportAsync(_vm.CurrentLat, _vm.CurrentLon, _vm.NearbyMetars, _vm.CurrentIcao);
+        };
+
+        // When the user clicks "Look Up" on a map marker, run a full lookup for that station.
+        MapViewControl.StationSelected += async icao =>
+        {
+            _vm.SearchText = icao;
+            await _vm.FetchAllAsync(icao);
         };
     }
 
@@ -63,11 +80,23 @@ public partial class MainWindow : Window
         _vm.LookupCommand.Execute(null);
     }
 
-    /// <summary>Applies the ModernWpf application theme immediately when the toggle is switched.</summary>
+    /// <summary>Opens the API Status dialog and runs connectivity checks for all external endpoints.</summary>
+    private void ApiStatus_Click(object sender, RoutedEventArgs e)
+    {
+        var dlg = new ApiStatusWindow { Owner = this };
+        dlg.ShowDialog();
+    }
+
+    /// <summary>Applies the ModernWpf application theme immediately when the toggle is switched and persists the choice.</summary>
     private void ThemeSwitch_Toggled(object sender, RoutedEventArgs e)
     {
+        bool isDark = ThemeSwitch.IsChecked == true;
         ThemeManager.Current.ApplicationTheme =
-            ThemeSwitch.IsOn ? ApplicationTheme.Dark : ApplicationTheme.Light;
+            isDark ? ApplicationTheme.Dark : ApplicationTheme.Light;
+
+        var settings = _settingsService.Load();
+        settings.IsDarkTheme = isDark;
+        _settingsService.Save(settings);
     }
 
     /// <summary>
@@ -81,7 +110,7 @@ public partial class MainWindow : Window
         if (!string.IsNullOrEmpty(_vm.CurrentIcao))
         {
             if (MainTabs.SelectedIndex == 2)
-                await MapViewControl.ShowAirportAsync(_vm.CurrentLat, _vm.CurrentLon, _vm.NearbyMetars);
+                await MapViewControl.ShowAirportAsync(_vm.CurrentLat, _vm.CurrentLon, _vm.NearbyMetars, _vm.CurrentIcao);
             else if (MainTabs.SelectedIndex == 3)
                 await _vm.ChartsVm.LoadAsync(_vm.CurrentIcao);
         }

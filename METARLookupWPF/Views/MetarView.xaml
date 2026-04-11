@@ -144,20 +144,24 @@
             </UniformGrid>
 
             <!-- ATIS Section -->
-            <Border Grid.Row="3" CornerRadius="6" Padding="12"
-                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                <StackPanel>
-                    <TextBlock Text="ATIS" Style="{StaticResource TileLabelStyle}"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                        <Button Content="Arrival" Margin="0,0,8,0"
-                                Command="{Binding ShowAtisCommand}" CommandParameter="arr"/>
-                        <Button Content="Departure"
-                                Command="{Binding ShowAtisCommand}" CommandParameter="dep"/>
+            <StackPanel Grid.Row="3">
+                <Border CornerRadius="6" Padding="12" Margin="0,0,0,8"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                    <StackPanel>
+                        <TextBlock Text="ARRIVAL ATIS" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Text="{Binding ArrivalAtisText}" FontFamily="Consolas" FontSize="11"
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
-                    <TextBlock Text="{Binding AtisText}" FontFamily="Consolas" FontSize="11"
-                               TextWrapping="Wrap"/>
-                </StackPanel>
-            </Border>
+                </Border>
+                <Border CornerRadius="6" Padding="12"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                    <StackPanel>
+                        <TextBlock Text="DEPARTURE ATIS" Style="{StaticResource TileLabelStyle}"/>
+                        <TextBlock Text="{Binding DepartureAtisText}" FontFamily="Consolas" FontSize="11"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
         </Grid>
     </ScrollViewer>
 </UserControl>

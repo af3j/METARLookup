@@ -21,7 +21,8 @@ public partial class MainViewModel(
     TafViewModel tafVm,
     SigmetViewModel sigmetVm,
     ChartsViewModel chartsVm,
-    CalculatorsViewModel calculatorsVm) : ObservableObject
+    CalculatorsViewModel calculatorsVm,
+    IUserSettingsService settingsService) : ObservableObject
 {
     // ── Bindable state ────────────────────────────────────────────────────────
 
@@ -39,9 +40,6 @@ public partial class MainViewModel(
 
     /// <summary>Controls visibility of the red error banner.</summary>
     [ObservableProperty] private bool _hasError;
-
-    /// <summary>When true, a 5-minute repeating timer re-fetches data for the current ICAO automatically.</summary>
-    [ObservableProperty] private bool _autoRefresh;
 
     /// <summary>The zero-based index of the currently selected tab in MainTabs.</summary>
     [ObservableProperty] private int _selectedTabIndex;
@@ -67,9 +65,9 @@ public partial class MainViewModel(
     /// Pinned favourite airports shown in the header strip.
     /// Capped at 8 entries; adding beyond the cap removes the oldest.
     /// </summary>
-    public ObservableCollection<FavoriteStation> Favorites { get; } = [];
-
-    private System.Timers.Timer? _refreshTimer;
+    public ObservableCollection<FavoriteStation> Favorites { get; } =
+        new(settingsService.Load().Favorites
+            .Select(f => new FavoriteStation { Icao = f.Icao, FlightCategory = f.FlightCategory }));
 
     // Tracks the most recent in-flight request so it can be cancelled when the user
     // starts a new lookup before the previous one completes.
@@ -129,18 +127,23 @@ public partial class MainViewModel(
             metarVm.Load(metar, airport, atisList);
 
             CurrentIcao = icao;
-            CurrentLat = airport?.Latitude;
-            CurrentLon = airport?.Longitude;
+
+            // Use airport service coords first; fall back to the primary METAR's own lat/lon
+            // if the airport service returned null (e.g. airport-data.com failure).
+            var lat = airport?.Latitude ?? metar?.Latitude;
+            var lon = airport?.Longitude ?? metar?.Longitude;
+            CurrentLat = lat;
+            CurrentLon = lon;
 
             // ── Batch 2: TAF + SIGMETs + nearby METARs ───────────────────────
             var tafTask    = weatherService.GetTafAsync(icao, ct);
             var sigmetTask = weatherService.GetSigmetsAsync(ct);
 
             // Nearby METAR fetch requires coordinates, so it is only launched if
-            // the airport lookup succeeded and returned valid lat/lon.
+            // we have valid lat/lon from either the airport service or the primary METAR.
             Task<List<Metar>>? nearbyTask = null;
-            if (airport?.Latitude.HasValue == true && airport.Longitude.HasValue == true)
-                nearbyTask = weatherService.GetNearbyMetarsAsync(airport.Latitude!.Value, airport.Longitude!.Value, 1.0, ct);
+            if (lat.HasValue && lon.HasValue)
+                nearbyTask = weatherService.GetNearbyMetarsAsync(lat.Value, lon.Value, 1.0, ct);
 
             // Spread-operator syntax includes nearbyTask only when non-null.
             await Task.WhenAll([tafTask, sigmetTask, .. (nearbyTask != null ? new[] { nearbyTask } : [])]);
@@ -194,6 +197,8 @@ public partial class MainViewModel(
             Icao = CurrentIcao,
             FlightCategory = MetarVm.FlightCategoryText
         });
+
+        SaveSettings();
     }
 
     /// <summary>
@@ -208,34 +213,10 @@ public partial class MainViewModel(
     }
 
     [RelayCommand]
-    private void RemoveFavorite(FavoriteStation fav) => Favorites.Remove(fav);
-
-    // ── Auto-refresh ──────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Partial method called automatically by the source generator whenever AutoRefresh changes.
-    /// Creates or destroys a 5-minute repeating timer accordingly.
-    /// The timer callback marshals onto the UI thread via Dispatcher.InvokeAsync because
-    /// System.Timers.Timer fires on a thread-pool thread.
-    /// </summary>
-    partial void OnAutoRefreshChanged(bool value)
+    private void RemoveFavorite(FavoriteStation fav)
     {
-        _refreshTimer?.Stop();
-        _refreshTimer?.Dispose();
-        _refreshTimer = null;
-
-        if (value && !string.IsNullOrEmpty(CurrentIcao))
-        {
-            _refreshTimer = new System.Timers.Timer(TimeSpan.FromMinutes(5).TotalMilliseconds);
-            _refreshTimer.Elapsed += async (_, _) =>
-            {
-                // System.Timers.Timer fires on a thread-pool thread; WPF UI must be updated on the UI thread.
-                await System.Windows.Application.Current.Dispatcher.InvokeAsync(
-                    async () => await FetchAllAsync(CurrentIcao));
-            };
-            _refreshTimer.AutoReset = true;
-            _refreshTimer.Start();
-        }
+        Favorites.Remove(fav);
+        SaveSettings();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -245,6 +226,19 @@ public partial class MainViewModel(
         ErrorMessage = msg;
         HasError = true;
         StatusMessage = msg;
+    }
+
+    /// <summary>
+    /// Serializes the current Favorites to the settings file.
+    /// Round-trips through Load() first so IsDarkTheme (owned by MainWindow) is preserved.
+    /// </summary>
+    private void SaveSettings()
+    {
+        var settings = settingsService.Load();
+        settings.Favorites = Favorites
+            .Select(f => new SavedFavorite { Icao = f.Icao, FlightCategory = f.FlightCategory })
+            .ToList();
+        settingsService.Save(settings);
     }
 }
 

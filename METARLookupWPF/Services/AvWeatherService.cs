@@ -35,10 +35,11 @@ public class AvWeatherService(HttpClient http) : IAvWeatherService
         double minLat = lat - radiusDeg, maxLat = lat + radiusDeg;
         double minLon = lon - radiusDeg, maxLon = lon + radiusDeg;
 
-        // InvariantCulture is required so decimal separators are always '.' regardless of OS locale.
-        string bbox = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2},{3}", minLon, minLat, maxLon, maxLat);
+        // AWC bbox format is minLat,minLon,maxLat,maxLon (lat-first).
+        // InvariantCulture ensures decimal separators are always '.' regardless of OS locale.
+        string bbox = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2},{3}", minLat, minLon, maxLat, maxLon);
         return await FetchMetarsXmlAsync(
-            $"https://aviationweather.gov/api/data/metar?bbox={bbox}&hoursBeforeNow=2&format=xml&mostRecent=true", ct);
+            $"https://aviationweather.gov/api/data/metar?bbox={bbox}&hours=2&format=xml&mostRecent=true", ct);
     }
 
     /// <inheritdoc/>
@@ -183,6 +184,11 @@ public class AvWeatherService(HttpClient http) : IAvWeatherService
             if (double.TryParse(el.Element("visibility_statute_mi")?.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double vis)) m.VisibilityStatuteMi = vis;
             if (double.TryParse(el.Element("altim_in_hg")?.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double alt)) m.AltimeterInHg = alt;
             if (double.TryParse(el.Element("elevation_m")?.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double elev)) m.ElevationMeter = elev;
+            // Try both old ADDS element names ("latitude"/"longitude") and newer API names ("lat"/"lon").
+            var latStr = el.Element("latitude")?.Value ?? el.Element("lat")?.Value;
+            var lonStr = el.Element("longitude")?.Value ?? el.Element("lon")?.Value;
+            if (double.TryParse(latStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double mlat)) m.Latitude  = mlat;
+            if (double.TryParse(lonStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double mlon)) m.Longitude = mlon;
 
             // Sky conditions are XML attributes on each <sky_condition> element.
             foreach (var sky in el.Elements("sky_condition"))

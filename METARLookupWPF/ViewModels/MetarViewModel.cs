@@ -18,11 +18,11 @@ public partial class MetarViewModel : ObservableObject
     /// <summary>Airport metadata returned alongside the METAR. Null if the airport lookup failed.</summary>
     [ObservableProperty] private Airport? _airport;
 
-    /// <summary>Full text of the currently displayed ATIS broadcast.</summary>
-    [ObservableProperty] private string _atisText = string.Empty;
+    /// <summary>Full text of the arrival ATIS broadcast.</summary>
+    [ObservableProperty] private string _arrivalAtisText = string.Empty;
 
-    /// <summary>Which ATIS type is selected: "arr" (arrival) or "dep" (departure).</summary>
-    [ObservableProperty] private string _selectedAtisType = "arr";
+    /// <summary>Full text of the departure ATIS broadcast.</summary>
+    [ObservableProperty] private string _departureAtisText = string.Empty;
 
     // Stored so ShowAtis can switch between arrival and departure without a new API call.
     private List<Atis> _atisList = [];
@@ -32,7 +32,7 @@ public partial class MetarViewModel : ObservableObject
     // Instead, NotifyAll() raises them all at once after every Load() call.
 
     /// <summary>Flight category string (VFR / MVFR / IFR / LIFR / "—" if no data).</summary>
-    public string FlightCategoryText => Metar?.FlightCategory ?? "—";
+    public string FlightCategoryText => Metar?.FlightCategory ?? "-";
 
     public string StationId => Metar?.StationId ?? "—";
     public string AirportName => Airport?.Name ?? "—";
@@ -91,26 +91,21 @@ public partial class MetarViewModel : ObservableObject
         Metar = metar;
         Airport = airport;
         _atisList = atis;
-        ShowAtis(SelectedAtisType);
+        LoadAtis();
         NotifyAll();
     }
 
     // ── ATIS handling ─────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Selects which ATIS type to display. Falls back to "combined" if the requested
-    /// type isn't available, then to any available ATIS as a last resort.
-    /// Bound to the Arrival/Departure toggle buttons in MetarView.
-    /// </summary>
-    [RelayCommand]
-    private void ShowAtis(string type)
+    private void LoadAtis()
     {
-        SelectedAtisType = type;
-        var match = _atisList.FirstOrDefault(a => a.Type == type)
-                    ?? _atisList.FirstOrDefault(a => a.Type == "combined")
-                    ?? _atisList.FirstOrDefault();
+        var arrival   = _atisList.FirstOrDefault(a => a.Type == "arr")
+                     ?? _atisList.FirstOrDefault(a => a.Type == "combined");
+        var departure = _atisList.FirstOrDefault(a => a.Type == "dep")
+                     ?? _atisList.FirstOrDefault(a => a.Type == "combined");
 
-        AtisText = match?.Datis ?? (type == "arr" ? "Arrival ATIS not available." : "Departure ATIS not available.");
+        ArrivalAtisText   = arrival?.Datis   ?? "Arrival ATIS not available.";
+        DepartureAtisText = departure?.Datis ?? "Departure ATIS not available.";
     }
 
     // ── Property change notification ──────────────────────────────────────────

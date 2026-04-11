@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.IO;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using METARLookupWPF.Models;
@@ -34,6 +36,20 @@ public partial class MapView : UserControl
     private double? _pendingLat;
     private double? _pendingLon;
     private List<Metar> _pendingNearby = [];
+    private string? _pendingRadarUrl;
+    private string? _pendingPrimaryIcao;
+
+    // Dedicated client for the one-off RainViewer metadata request.
+    private static readonly HttpClient _radarHttp = new()
+    {
+        Timeout = TimeSpan.FromSeconds(5)
+    };
+
+    /// <summary>
+    /// Raised when the user clicks "Look Up" on a nearby station's popup.
+    /// The string argument is the station's ICAO code.
+    /// </summary>
+    public event Action<string>? StationSelected;
 
     public MapView()
     {
@@ -56,8 +72,16 @@ public partial class MapView : UserControl
         MapWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
             VirtualHostName, _tempMapDir, CoreWebView2HostResourceAccessKind.Allow);
 
+        // When JS calls window.chrome.webview.postMessage(icao), raise StationSelected.
+        MapWebView.CoreWebView2.WebMessageReceived += (_, args) =>
+        {
+            var icao = args.TryGetWebMessageAsString();
+            if (!string.IsNullOrWhiteSpace(icao))
+                StationSelected?.Invoke(icao);
+        };
+
         // Render with whatever airport was requested before initialisation completed.
-        NavigateMap(BuildMapHtml(_pendingLat, _pendingLon, _pendingNearby));
+        NavigateMap(BuildMapHtml(_pendingLat, _pendingLon, _pendingNearby, _pendingRadarUrl, _pendingPrimaryIcao));
     }
 
     /// <summary>
@@ -65,16 +89,42 @@ public partial class MapView : UserControl
     /// If WebView2 is not yet ready, stores the values so OnLoaded will apply them.
     /// Called from MainWindow.xaml.cs when NearbyMetars changes or the Map tab is selected.
     /// </summary>
-    public async Task ShowAirportAsync(double? lat, double? lon, List<Metar> nearby)
+    public async Task ShowAirportAsync(double? lat, double? lon, List<Metar> nearby, string? primaryIcao = null)
     {
         _pendingLat = lat;
         _pendingLon = lon;
         _pendingNearby = nearby;
+        _pendingPrimaryIcao = primaryIcao;
+        _pendingRadarUrl = await FetchRadarTileUrlAsync();
 
         // If WebView2 hasn't finished initialising, OnLoaded will pick up the pending values.
         if (!_initialized) return;
         await MapWebView.EnsureCoreWebView2Async();
-        NavigateMap(BuildMapHtml(lat, lon, nearby));
+        NavigateMap(BuildMapHtml(lat, lon, nearby, _pendingRadarUrl, primaryIcao));
+    }
+
+    /// <summary>
+    /// Fetches the latest RainViewer radar frame path from their metadata API and returns
+    /// a ready-to-use Leaflet tile URL. Returns null if the request fails or times out,
+    /// in which case the map renders without the radar overlay.
+    /// Fetching from C# avoids browser-sandbox restrictions that can silently block
+    /// fetch() calls from WebView2 virtual-host pages.
+    /// </summary>
+    private static async Task<string?> FetchRadarTileUrlAsync()
+    {
+        try
+        {
+            var json = await _radarHttp.GetStringAsync("https://api.rainviewer.com/public/weather-maps.json");
+            using var doc = JsonDocument.Parse(json);
+            var past = doc.RootElement.GetProperty("radar").GetProperty("past");
+            if (past.GetArrayLength() == 0) return null;
+            var path = past[past.GetArrayLength() - 1].GetProperty("path").GetString();
+            // {z}/{x}/{y} are Leaflet tile template tokens — curly braces are literal here.
+            return path != null
+                ? $"https://tilecache.rainviewer.com{path}/512/{{z}}/{{x}}/{{y}}/2/1_1.png"
+                : null;
+        }
+        catch { return null; }
     }
 
     /// <summary>
@@ -94,12 +144,12 @@ public partial class MapView : UserControl
     /// When no airport coordinates are provided, centres the map over the continental US at zoom 4.
     /// Nearby METARs are emitted as JavaScript addMarker() calls colour-coded by flight category.
     /// </summary>
-    private static string BuildMapHtml(double? lat, double? lon, List<Metar> nearby)
+    private static string BuildMapHtml(double? lat, double? lon, List<Metar> nearby, string? radarTileUrl, string? primaryIcao)
     {
         // Default centre: geographic centre of the contiguous United States.
         double centerLat = lat ?? 39.8283;
         double centerLon = lon ?? -98.5795;
-        int zoom = lat.HasValue ? 12 : 4;
+        int zoom = lat.HasValue ? 10 : 4;
 
         // InvariantCulture ensures decimal separators are '.' in the JavaScript literals,
         // regardless of the OS locale setting.
@@ -108,11 +158,38 @@ public partial class MapView : UserControl
 
         var markers = new StringBuilder();
 
-        // Add the primary (searched) airport marker first so it renders on top.
+        // Build the radar layer snippet here so it can be injected into the raw string below
+        // without conflicting with the $$ interpolation brace rules.
+        string radarJs = radarTileUrl != null
+            ? $"L.tileLayer('{radarTileUrl}', {{ opacity: 0.5, maxNativeZoom: 6, maxZoom: 19, attribution: 'RainViewer' }}).addTo(map);"
+            : "// radar unavailable";
+
+        // Nearby stations first (drawn below the primary marker).
+        // Skip the primary airport itself to avoid a duplicate dot underneath the orange marker.
+        foreach (var m in nearby.Where(m =>
+            m.Latitude.HasValue && m.Longitude.HasValue &&
+            m.StationId != primaryIcao))
+        {
+            var cat = (m.FlightCategory ?? string.Empty).ToLowerInvariant() switch
+            {
+                "vfr"  => "vfr",
+                "mvfr" => "mvfr",
+                "ifr"  => "ifr",
+                "lifr" => "lifr",
+                _      => "mvfr"
+            };
+            var mLat   = m.Latitude!.Value.ToString(CultureInfo.InvariantCulture);
+            var mLon   = m.Longitude!.Value.ToString(CultureInfo.InvariantCulture);
+            var icao   = (m.StationId ?? string.Empty).Replace("'", "");
+            var label  = $"{icao} — {(m.FlightCategory ?? "?")}";
+            markers.AppendLine($"addMarker({mLat}, {mLon}, '{cat}', '{icao}', '{label}');");
+        }
+
+        // Primary airport last so its orange marker renders on top.
         if (lat.HasValue && lon.HasValue)
         {
             markers.AppendLine(
-                $"addMarker({centerLatStr}, {centerLonStr}, 'primary', '');");
+                $"addMarker({centerLatStr}, {centerLonStr}, 'primary', '', '{primaryIcao ?? ""}');");
         }
 
         // $$""" is a raw interpolated string; {{...}} is C# interpolation while {single braces} are literal JS.
@@ -132,6 +209,7 @@ public partial class MapView : UserControl
                 .cat-ifr  { background:#EE4433; border:2px solid #fff; border-radius:50%; width:14px; height:14px; }
                 .cat-lifr { background:#AA22AA; border:2px solid #fff; border-radius:50%; width:14px; height:14px; }
                 .cat-primary { background:#FF9900; border:3px solid #fff; border-radius:50%; width:18px; height:18px; box-shadow:0 0 8px rgba(255,153,0,0.8); }
+                .icao-label { background:transparent; border:none; box-shadow:none; font-size:10px; font-weight:bold; color:#111; text-shadow:0 0 3px #fff, 0 0 3px #fff; white-space:nowrap; }
               </style>
             </head>
             <body>
@@ -143,9 +221,24 @@ public partial class MapView : UserControl
                   maxZoom: 19
                 }).addTo(map);
 
-                function addMarker(lat, lon, cat, label) {
-                  var icon = L.divIcon({ className: 'cat-' + cat, iconSize: [14,14] });
-                  L.marker([lat, lon], {icon: icon}).addTo(map).bindPopup(label || cat);
+                {{radarJs}}
+
+                function selectStation(icao) {
+                  window.chrome.webview.postMessage(icao);
+                }
+
+                function addMarker(lat, lon, cat, icao, label) {
+                  var size = cat === 'primary' ? [18,18] : [14,14];
+                  var icon = L.divIcon({ className: 'cat-' + cat, iconSize: size });
+                  var marker = L.marker([lat, lon], {icon: icon}).addTo(map);
+                  if (icao) {
+                    marker.bindTooltip(icao, { permanent: true, direction: 'top', className: 'icao-label', offset: [0, -4] });
+                    var popupHtml = '<b>' + (label || icao) + '</b>' +
+                      (cat !== 'primary'
+                        ? '<br><a href="#" onclick="selectStation(\'' + icao + '\');return false;" style="font-size:11px;">Look Up</a>'
+                        : '');
+                    marker.bindPopup(popupHtml);
+                  }
                 }
 
                 {{markers}}

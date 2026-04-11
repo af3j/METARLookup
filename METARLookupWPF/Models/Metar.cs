@@ -61,6 +61,12 @@ public class Metar
     /// <summary>Airport field elevation in meters above mean sea level.</summary>
     public double? ElevationMeter { get; set; }
 
+    /// <summary>WGS-84 latitude in decimal degrees. Used to place the station marker on the map.</summary>
+    public double? Latitude { get; set; }
+
+    /// <summary>WGS-84 longitude in decimal degrees.</summary>
+    public double? Longitude { get; set; }
+
     /// <summary>Ordered list of reported sky-condition layers, lowest first.</summary>
     public List<SkyCondition> SkyConditions { get; set; } = [];
 
