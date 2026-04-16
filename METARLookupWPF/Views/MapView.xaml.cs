@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using METARLookupWPF.Models;
 using Microsoft.Web.WebView2.Core;
+using ModernWpf;
 
 namespace METARLookupWPF.Views;
 
@@ -85,6 +86,22 @@ public partial class MapView : UserControl
     }
 
     /// <summary>
+    /// Switches the map tile layer and label colours via JavaScript without reloading the page.
+    /// This is instant — no page blank, no CDN re-fetch, no tile reload.
+    /// Safe to call even if no airport has been loaded yet (the JS guard handles it).
+    /// </summary>
+    public async Task SetThemeAsync(bool isDark)
+    {
+        if (!_initialized) return;
+        await MapWebView.EnsureCoreWebView2Async();
+        // setMapTheme is defined in the generated HTML; the guard is a safety net for
+        // the rare case where the page hasn't finished loading yet.
+        string script = isDark ? "if(window.setMapTheme)setMapTheme(true);"
+                                : "if(window.setMapTheme)setMapTheme(false);";
+        await MapWebView.ExecuteScriptAsync(script);
+    }
+
+    /// <summary>
     /// Updates the map to show the given airport and nearby METAR stations.
     /// If WebView2 is not yet ready, stores the values so OnLoaded will apply them.
     /// Called from MainWindow.xaml.cs when NearbyMetars changes or the Map tab is selected.
@@ -143,6 +160,7 @@ public partial class MapView : UserControl
     /// Generates a complete Leaflet HTML page as a string.
     /// When no airport coordinates are provided, centres the map over the continental US at zoom 4.
     /// Nearby METARs are emitted as JavaScript addMarker() calls colour-coded by flight category.
+    /// Automatically uses the CartoDB Dark Matter tile layer when the WPF application theme is dark.
     /// </summary>
     private static string BuildMapHtml(double? lat, double? lon, List<Metar> nearby, string? radarTileUrl, string? primaryIcao)
     {
@@ -155,6 +173,16 @@ public partial class MapView : UserControl
         // regardless of the OS locale setting.
         string centerLatStr = centerLat.ToString(CultureInfo.InvariantCulture);
         string centerLonStr = centerLon.ToString(CultureInfo.InvariantCulture);
+
+        // Choose tile layer and label colours based on the current WPF application theme.
+        bool isDark = ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Dark;
+        string tileUrl = isDark
+            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+        string labelColor      = isDark ? "#fff" : "#111";
+        string labelTextShadow = isDark
+            ? "0 0 3px #000, 0 0 3px #000"
+            : "0 0 3px #fff, 0 0 3px #fff";
 
         var markers = new StringBuilder();
 
@@ -203,23 +231,35 @@ public partial class MapView : UserControl
               <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
               <style>
                 html, body, #map { margin:0; padding:0; height:100%; width:100%; }
+                :root { --label-color: {{labelColor}}; --label-shadow: {{labelTextShadow}}; }
                 /* Flight-category colour coding matches FAA standard colours */
                 .cat-vfr  { background:#22BB45; border:2px solid #fff; border-radius:50%; width:14px; height:14px; }
                 .cat-mvfr { background:#2288FF; border:2px solid #fff; border-radius:50%; width:14px; height:14px; }
                 .cat-ifr  { background:#EE4433; border:2px solid #fff; border-radius:50%; width:14px; height:14px; }
                 .cat-lifr { background:#AA22AA; border:2px solid #fff; border-radius:50%; width:14px; height:14px; }
                 .cat-primary { background:#FF9900; border:3px solid #fff; border-radius:50%; width:18px; height:18px; box-shadow:0 0 8px rgba(255,153,0,0.8); }
-                .icao-label { background:transparent; border:none; box-shadow:none; font-size:10px; font-weight:bold; color:#111; text-shadow:0 0 3px #fff, 0 0 3px #fff; white-space:nowrap; }
+                .icao-label { background:transparent; border:none; box-shadow:none; font-size:10px; font-weight:bold; color:var(--label-color); text-shadow:var(--label-shadow); white-space:nowrap; }
               </style>
             </head>
             <body>
               <div id="map"></div>
               <script>
                 var map = L.map('map').setView([{{centerLatStr}}, {{centerLonStr}}], {{zoom}});
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                window._baseTileLayer = L.tileLayer('{{tileUrl}}', {
                   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
                   maxZoom: 19
                 }).addTo(map);
+                /* Called by C# via ExecuteScriptAsync to switch themes without a page reload */
+                window.setMapTheme = function(isDark) {
+                  var url = isDark
+                    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+                  window._baseTileLayer.setUrl(url);
+                  var r = document.documentElement;
+                  r.style.setProperty('--label-color',  isDark ? '#fff' : '#111');
+                  r.style.setProperty('--label-shadow', isDark ? '0 0 3px #000, 0 0 3px #000'
+                                                               : '0 0 3px #fff, 0 0 3px #fff');
+                };
 
                 {{radarJs}}
 

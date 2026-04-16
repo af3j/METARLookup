@@ -88,7 +88,7 @@ public partial class MainWindow : Window
     }
 
     /// <summary>Applies the ModernWpf application theme immediately when the toggle is switched and persists the choice.</summary>
-    private void ThemeSwitch_Toggled(object sender, RoutedEventArgs e)
+    private async void ThemeSwitch_Toggled(object sender, RoutedEventArgs e)
     {
         bool isDark = ThemeSwitch.IsChecked == true;
         ThemeManager.Current.ApplicationTheme =
@@ -97,6 +97,10 @@ public partial class MainWindow : Window
         var settings = _settingsService.Load();
         settings.IsDarkTheme = isDark;
         _settingsService.Save(settings);
+
+        // Switch map tile layer via JS — no page reload, instant, no HTTP request.
+        if (MainTabs.SelectedIndex == 2)
+            await MapViewControl.SetThemeAsync(isDark);
     }
 
     /// <summary>
