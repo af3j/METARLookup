@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{367AA9B9-FF8F-4FD7-B273-202A6EB7EEBD}</ProjectGuid>
+    <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
+    <AppxPackage>true</AppxPackage>
+    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+
+  </PropertyGroup>
+  <!--
+    WapProjPath is normally injected by Visual Studio's project system when opening a .wapproj.
+    This fallback ensures MSBuild can resolve it even when VS hasn't pre-set the property
+    (e.g. first load, command-line builds, or certain VS versions).
+  -->
+  <PropertyGroup>
+    <WapProjPath Condition="'$(WapProjPath)' == ''">$(MSBuildExtensionsPath)\Microsoft\DesktopBridge\</WapProjPath>
+    <EntryPointProjectUniqueName>..\METARLookupWPF\METARLookupWPF.csproj</EntryPointProjectUniqueName>
+  </PropertyGroup>
+  <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\METARLookupWPF\METARLookupWPF.csproj">
+      <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
+      <AdditionalProperties>RuntimeIdentifier=win-x64;SelfContained=true</AdditionalProperties>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+</Project>

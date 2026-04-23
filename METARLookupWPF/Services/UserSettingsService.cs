@@ -14,7 +14,7 @@ public class UserSettingsService : IUserSettingsService
 {
     private static readonly string SettingsPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "METARLookupWPF",
+        "METARLookup",
         "settings.json");
 
     private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };

@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using METARLookupWPF.Services;
 using METARLookupWPF.ViewModels;
 
 namespace METARLookupWPF.Views;
@@ -33,7 +34,10 @@ public partial class ChartsView : UserControl
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         if (_webViewInitialized) return;
-        await ChartWebView.EnsureCoreWebView2Async();
+
+        // Must use the same CoreWebView2Environment instance as MapView — WebView2 throws if
+        // two controls in the same process are initialized with different environment objects.
+        await ChartWebView.EnsureCoreWebView2Async(await WebView2EnvironmentService.GetAsync());
         _webViewInitialized = true;                 // set AFTER CoreWebView2 is ready
 
         // A chart may have been selected before the WebView was ready; navigate now.

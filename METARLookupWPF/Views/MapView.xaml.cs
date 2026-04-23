@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using METARLookupWPF.Models;
+using METARLookupWPF.Services;
 using Microsoft.Web.WebView2.Core;
 using ModernWpf;
 
@@ -67,7 +68,11 @@ public partial class MapView : UserControl
     {
         if (_initialized) return;
         _initialized = true;
-        await MapWebView.EnsureCoreWebView2Async();
+
+        // All WebView2 controls in the process must share one CoreWebView2Environment instance.
+        // WebView2EnvironmentService creates it once (pointed at %LocalAppData%\METARLookup\WebView2)
+        // and returns the same object on every subsequent call.
+        await MapWebView.EnsureCoreWebView2Async(await WebView2EnvironmentService.GetAsync());
 
         // Map the virtual hostname to the temp directory so the WebView can load map.html via HTTPS.
         MapWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
