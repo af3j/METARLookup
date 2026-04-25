@@ -28,7 +28,12 @@
       "PowerShell(npm install -g docx; Write-Host \"Exit: $LASTEXITCODE\")",
       "PowerShell(npm root -g)",
       "PowerShell(python \"C:\\\\Users\\\\af3j\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\e2764237-7be7-41f4-a3c2-f32cff0bea3e\\\\b4b90dcb-d0db-4e26-81e8-2f2c436a1d73\\\\skills\\\\docx\\\\scripts\\\\office\\\\validate.py\" \"C:\\\\Users\\\\af3j\\\\source\\\\repos\\\\af3j\\\\METARLookup\\\\METAR_Lookup_License.docx\")",
-      "PowerShell(python \"C:\\\\Users\\\\af3j\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\e2764237-7be7-41f4-a3c2-f32cff0bea3e\\\\b4b90dcb-d0db-4e26-81e8-2f2c436a1d73\\\\skills\\\\docx\\\\scripts\\\\office\\\\validate.py\" \"C:\\\\Users\\\\af3j\\\\source\\\\repos\\\\af3j\\\\METARLookup\\\\METAR_Lookup_User_Manual.docx\")"
+      "PowerShell(python \"C:\\\\Users\\\\af3j\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\e2764237-7be7-41f4-a3c2-f32cff0bea3e\\\\b4b90dcb-d0db-4e26-81e8-2f2c436a1d73\\\\skills\\\\docx\\\\scripts\\\\office\\\\validate.py\" \"C:\\\\Users\\\\af3j\\\\source\\\\repos\\\\af3j\\\\METARLookup\\\\METAR_Lookup_User_Manual.docx\")",
+      "Read(//home/user/skills/**)",
+      "Bash(pandoc --track-changes=all \"C:\\\\Users\\\\af3j\\\\source\\\\repos\\\\af3j\\\\METARLookup\\\\METAR_Lookup_User_Manual.docx\" -o /tmp/manual_content.md)",
+      "Read(//tmp/**)",
+      "PowerShell(python -m pip install defusedxml -q 2>&1)",
+      "PowerShell(Get-ChildItem \"$env:TEMP\\\\manual_unpacked\" -Recurse | Select-Object FullName)"
     ],
     "deny": [],
     "ask": []

@@ -1,4 +1,4 @@
-METAR LOOKUP  -  Version 2.0
+METAR LOOKUP  -  Version 2.1
 SOFTWARE LICENSE AGREEMENT
 
 Copyright (c) 2026 Farrand Tech Services. All rights reserved.
@@ -130,7 +130,7 @@ THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 ----------------------------------------------------------------------
-METAR Lookup v2.0  |  Copyright (c) 2026 Farrand Tech Services
+METAR Lookup v2.1  |  Copyright (c) 2026 Farrand Tech Services
 MIT License  |  Data provided by aviationweather.gov
 NOT FOR OPERATIONAL FLIGHT PLANNING
 ----------------------------------------------------------------------
