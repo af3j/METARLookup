@@ -4,6 +4,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:conv="clr-namespace:METARLookupWPF.Converters"
         xmlns:views="clr-namespace:METARLookupWPF.Views"
+        xmlns:models="clr-namespace:METARLookupWPF.Models"
         ui:WindowHelper.UseModernWindowStyle="True"
         Title="METAR Lookup" Icon="/Assets/app.ico" Height="760" Width="1100"
         MinWidth="900" MinHeight="600">
@@ -49,10 +50,39 @@
 
                 <!-- Search Box -->
                 <ui:AutoSuggestBox x:Name="SearchBox" Grid.Column="1"
-                    PlaceholderText="ICAO code (e.g. KSEA)"
+                    PlaceholderText="Airport name, city, or ICAO"
                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                    ItemsSource="{Binding AirportSuggestions}"
                     QuerySubmitted="SearchBox_QuerySubmitted"
-                    VerticalAlignment="Center"/>
+                    TextChanged="SearchBox_TextChanged"
+                    SuggestionChosen="SearchBox_SuggestionChosen"
+                    VerticalAlignment="Center">
+                    <ui:AutoSuggestBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:AirportSuggestion}">
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="55"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <!-- ICAO badge in monospace -->
+                                <TextBlock Grid.Column="0"
+                                           Text="{Binding Icao}"
+                                           FontWeight="SemiBold"
+                                           FontSize="13"
+                                           FontFamily="Consolas"
+                                           VerticalAlignment="Center"/>
+                                <!-- Airport name + city/country -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="12"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding LocationDisplay}"
+                                               FontSize="11" Opacity="0.6"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ui:AutoSuggestBox.ItemTemplate>
+                </ui:AutoSuggestBox>
 
                 <Button Grid.Column="2" Content="Lookup" Margin="8,0,0,0"
                         Click="LookupButton_Click"
@@ -60,8 +90,11 @@
                         VerticalAlignment="Center"/>
 
                 <!-- Favorites Strip: each chip is coloured by the flight category at save-time -->
-                <ItemsControl Grid.Column="3" ItemsSource="{Binding Favorites}" Margin="16,0,0,0"
-                              VerticalAlignment="Center">
+                <ScrollViewer Grid.Column="3" Margin="16,0,0,0" VerticalAlignment="Center"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled"
+                              Padding="0,0,0,16">
+                <ItemsControl ItemsSource="{Binding Favorites}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
@@ -92,6 +125,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                </ScrollViewer>
 
                 <!-- Controls -->
                 <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">

@@ -45,6 +45,7 @@ public partial class App : Application
         services.AddSingleton<IAvWeatherService, AvWeatherService>();
         services.AddSingleton<IAirportService, AirportService>();
         services.AddSingleton<IAtisService, AtisService>();
+        services.AddSingleton<IAirportSearchService, AirportSearchService>();
         services.AddSingleton<IFaaChartsService, FaaChartsService>();
         services.AddSingleton<IUserSettingsService, UserSettingsService>();
 

@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ModernWpf;
+using METARLookupWPF.Models;
 using METARLookupWPF.Services;
 using METARLookupWPF.ViewModels;
 
@@ -59,15 +60,42 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
-    /// Handles the AutoSuggestBox QuerySubmitted event (triggered by pressing Enter or selecting a suggestion).
-    /// We read the text directly from the event args rather than relying on the two-way binding because
-    /// WPF bindings may not have propagated the latest keystroke by the time this handler fires.
+    /// Handles the AutoSuggestBox QuerySubmitted event (triggered by pressing Enter with typed text).
+    /// When a suggestion is chosen, SuggestionChosen fires first and handles the lookup — we skip
+    /// QuerySubmitted in that case (args.ChosenSuggestion is non-null) to avoid a double fetch.
     /// </summary>
     private void SearchBox_QuerySubmitted(ModernWpf.Controls.AutoSuggestBox sender,
         ModernWpf.Controls.AutoSuggestBoxQuerySubmittedEventArgs args)
     {
+        // SuggestionChosen already fired FetchAllAsync — don't trigger a second lookup.
+        if (args.ChosenSuggestion is not null)
+            return;
+
         _vm.SearchText = args.QueryText ?? sender.Text ?? string.Empty;
         _vm.LookupCommand.Execute(null);
+    }
+
+    /// <summary>
+    /// Fires on every keystroke in the search box (UserInput reason only).
+    /// Delegates to the view-model to run an in-memory airport search and
+    /// populate the suggestion dropdown.
+    /// </summary>
+    private void SearchBox_TextChanged(ModernWpf.Controls.AutoSuggestBox sender,
+        ModernWpf.Controls.AutoSuggestBoxTextChangedEventArgs args)
+    {
+        if (args.Reason == ModernWpf.Controls.AutoSuggestionBoxTextChangeReason.UserInput)
+            _vm.UpdateSuggestions(sender.Text);
+    }
+
+    /// <summary>
+    /// Fires when the user selects an airport from the suggestion dropdown.
+    /// Delegates to the view-model which sets SearchText and triggers the full lookup.
+    /// </summary>
+    private async void SearchBox_SuggestionChosen(ModernWpf.Controls.AutoSuggestBox sender,
+        ModernWpf.Controls.AutoSuggestBoxSuggestionChosenEventArgs args)
+    {
+        if (args.SelectedItem is AirportSuggestion suggestion)
+            await _vm.SelectSuggestionAsync(suggestion);
     }
 
     /// <summary>

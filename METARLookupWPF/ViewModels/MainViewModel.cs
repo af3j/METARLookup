@@ -17,6 +17,7 @@ public partial class MainViewModel(
     IAvWeatherService weatherService,
     IAirportService airportService,
     IAtisService atisService,
+    IAirportSearchService airportSearchService,
     MetarViewModel metarVm,
     TafViewModel tafVm,
     SigmetViewModel sigmetVm,
@@ -53,6 +54,15 @@ public partial class MainViewModel(
     /// <summary>Longitude of the current airport; used to centre the Leaflet map.</summary>
     [ObservableProperty] private double? _currentLon;
 
+    /// <summary>Airport suggestions shown in the AutoSuggestBox dropdown as the user types.</summary>
+    [ObservableProperty] private ObservableCollection<AirportSuggestion> _airportSuggestions = [];
+
+    /// <summary>
+    /// Set to true when the user selects a suggestion rather than typing a raw ICAO code.
+    /// Bypasses the 3–4 char length check in LookupAsync (ICAO is guaranteed valid).
+    /// </summary>
+    private bool _selectedFromSuggestion;
+
     // ── Child view-models (injected, exposed read-only for XAML binding) ──────
 
     public MetarViewModel MetarVm => metarVm;
@@ -83,13 +93,43 @@ public partial class MainViewModel(
     private async Task LookupAsync()
     {
         var icao = SearchText.Trim().ToUpperInvariant();
-        if (string.IsNullOrEmpty(icao) || icao.Length < 3 || icao.Length > 4)
+
+        if (!_selectedFromSuggestion)
         {
-            SetError("Please enter a valid 3–4 character ICAO code.");
-            return;
+            if (string.IsNullOrEmpty(icao) || icao.Length < 3 || icao.Length > 4)
+            {
+                SetError("Please enter a valid 3–4 character ICAO code.");
+                return;
+            }
         }
 
+        _selectedFromSuggestion = false;
+        AirportSuggestions.Clear();
         await FetchAllAsync(icao);
+    }
+
+    /// <summary>
+    /// Called by the AutoSuggestBox TextChanged handler (UserInput reason only).
+    /// Runs a fast in-memory search and updates the suggestion dropdown.
+    /// </summary>
+    public void UpdateSuggestions(string text)
+    {
+        var results = airportSearchService.Search(text.Trim());
+        AirportSuggestions.Clear();
+        foreach (var s in results)
+            AirportSuggestions.Add(s);
+    }
+
+    /// <summary>
+    /// Called by the AutoSuggestBox SuggestionChosen handler.
+    /// Populates SearchText with the ICAO code and triggers the full lookup,
+    /// bypassing the length validation guard since the ICAO is guaranteed valid.
+    /// </summary>
+    public async Task SelectSuggestionAsync(AirportSuggestion suggestion)
+    {
+        _selectedFromSuggestion = true;
+        SearchText = suggestion.Icao;
+        await FetchAllAsync(suggestion.Icao);
     }
 
     /// <summary>
