@@ -198,12 +198,16 @@
         </TabControl>
 
         <!-- Status Bar -->
-        <Border Grid.Row="3" Padding="16,6"
+        <Border Grid.Row="3" Padding="12,4"
                 Background="{DynamicResource SystemControlBackgroundChromeMediumBrush}">
             <Grid>
                 <TextBlock Text="{Binding StatusMessage}" FontSize="11" Opacity="0.7" VerticalAlignment="Center"/>
-                <TextBlock Text="METAR Lookup v2.1 • Farrand Tech Services - farrandtech.com • Data: aviationweather.gov"
-                           HorizontalAlignment="Right" FontSize="11" Opacity="0.4" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding AppVersionString}"
+                               FontSize="11" Opacity="0.4" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <Button Content="Report Bug" FontSize="11" Padding="8,2"
+                            Click="ReportBug_Click" VerticalAlignment="Center"/>
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using METARLookupWPF.Models;
@@ -25,6 +26,13 @@ public partial class MainViewModel(
     CalculatorsViewModel calculatorsVm,
     IUserSettingsService settingsService) : ObservableObject
 {
+    // ── App metadata ─────────────────────────────────────────────────────────
+
+    public string AppVersionString { get; } =
+        Assembly.GetExecutingAssembly().GetName().Version is { } v
+            ? $"METAR Lookup v{v.ToString(v.Revision > 0 ? 4 : v.Build > 0 ? 3 : 2)} • Farrand Tech Services - farrandtech.com • Data: aviationweather.gov"
+            : "METAR Lookup • Farrand Tech Services - farrandtech.com • Data: aviationweather.gov";
+
     // ── Bindable state ────────────────────────────────────────────────────────
 
     /// <summary>Text currently typed in the ICAO search box.</summary>
@@ -145,6 +153,7 @@ public partial class MainViewModel(
         _cts = new CancellationTokenSource();
         var ct = _cts.Token;
 
+        ActivityLog.Record($"Searched for {icao}");
         IsBusy = true;
         HasError = false;
         StatusMessage = $"Loading data for {icao}…";

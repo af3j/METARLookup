@@ -33,7 +33,8 @@
       "Bash(pandoc --track-changes=all \"C:\\\\Users\\\\af3j\\\\source\\\\repos\\\\af3j\\\\METARLookup\\\\METAR_Lookup_User_Manual.docx\" -o /tmp/manual_content.md)",
       "Read(//tmp/**)",
       "PowerShell(python -m pip install defusedxml -q 2>&1)",
-      "PowerShell(Get-ChildItem \"$env:TEMP\\\\manual_unpacked\" -Recurse | Select-Object FullName)"
+      "PowerShell(Get-ChildItem \"$env:TEMP\\\\manual_unpacked\" -Recurse | Select-Object FullName)",
+      "Bash(git checkout *)"
     ],
     "deny": [],
     "ask": []

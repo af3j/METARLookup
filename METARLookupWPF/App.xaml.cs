@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using METARLookupWPF.Services;
 using METARLookupWPF.ViewModels;
 using METARLookupWPF.Views;
+using Sentry;
 
 namespace METARLookupWPF;
 
@@ -17,6 +18,7 @@ namespace METARLookupWPF;
 public partial class App : Application
 {
     private ServiceProvider? _services;
+    private IDisposable? _sentryDisposable;
 
     /// <summary>
     /// Builds the DI container and shows the main window. Called by WPF before any UI is displayed.
@@ -24,6 +26,31 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
+        _sentryDisposable = SentrySdk.Init(options =>
+        {
+            options.Dsn = "https://46c8ae2fb3fc8bfef5ba38935e3ef9e3@o4511311807512576.ingest.us.sentry.io/4511311810592768";
+            options.Release = $"metar-lookup@{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}";
+            options.Environment = "production";
+            // Disable auto-capture — we send only when the user clicks "Send Report"
+            options.DisableAppDomainUnhandledExceptionCapture();
+            options.AutoSessionTracking = false;
+        });
+
+        // Set e.Handled = true before anything else so WPF does not re-raise the exception
+        // if our handler itself fails.
+        DispatcherUnhandledException += (_, args) =>
+        {
+            args.Handled = true;
+            HandleCrash(args.Exception);
+            Current.Shutdown(1);
+        };
+
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+        {
+            if (args.ExceptionObject is Exception ex)
+                HandleCrash(ex);
+        };
 
         var services = new ServiceCollection();
 
@@ -48,6 +75,7 @@ public partial class App : Application
         services.AddSingleton<IAirportSearchService, AirportSearchService>();
         services.AddSingleton<IFaaChartsService, FaaChartsService>();
         services.AddSingleton<IUserSettingsService, UserSettingsService>();
+        services.AddSingleton<CrashReportService>();
 
         // ── ViewModels ────────────────────────────────────────────────────────
         // Child VMs are registered before MainViewModel because MainViewModel
@@ -73,7 +101,54 @@ public partial class App : Application
     /// </summary>
     protected override void OnExit(ExitEventArgs e)
     {
+        _sentryDisposable?.Dispose();
         _services?.Dispose();
         base.OnExit(e);
+    }
+
+    private void HandleCrash(Exception ex)
+    {
+        try
+        {
+            var reporter = _services?.GetService<CrashReportService>();
+            if (reporter == null)
+            {
+                // DI not yet ready — show a minimal message box.
+                MessageBox.Show(
+                    $"METAR Lookup encountered an unexpected error and must close.\n\n{ex.Message}",
+                    "Application Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var diagText = reporter.BuildDiagnosticText(ex);
+            reporter.WriteLogFile(diagText);
+
+            Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    var window = new CrashReportWindow(reporter, ex, CrashReportMode.Crash);
+                    window.ShowDialog();
+                }
+                catch
+                {
+                    // Dialog itself failed — fall back to a plain message box.
+                    MessageBox.Show(
+                        $"METAR Lookup encountered an unexpected error.\n\n{ex.Message}",
+                        "Application Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+        }
+        catch
+        {
+            // Last resort — if everything above fails, at least show something.
+            try
+            {
+                MessageBox.Show(
+                    $"METAR Lookup encountered an unexpected error and must close.\n\n{ex.Message}",
+                    "Application Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch { /* nothing more we can do */ }
+        }
     }
 }

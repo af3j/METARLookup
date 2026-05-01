@@ -69,25 +69,81 @@ public partial class MapView : UserControl
         if (_initialized) return;
         _initialized = true;
 
-        // All WebView2 controls in the process must share one CoreWebView2Environment instance.
-        // WebView2EnvironmentService creates it once (pointed at %LocalAppData%\METARLookup\WebView2)
-        // and returns the same object on every subsequent call.
-        await MapWebView.EnsureCoreWebView2Async(await WebView2EnvironmentService.GetAsync());
+        //#if DEBUG
+        //        // Remove after Sentry is verified.
+        //        static void ThrowTestMapError() =>
+        //            throw new InvalidOperationException("Sentry test — deliberate map initialisation error.");
+        //        ThrowTestMapError();
+        //#endif
 
-        // Map the virtual hostname to the temp directory so the WebView can load map.html via HTTPS.
-        MapWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
-            VirtualHostName, _tempMapDir, CoreWebView2HostResourceAccessKind.Allow);
-
-        // When JS calls window.chrome.webview.postMessage(icao), raise StationSelected.
-        MapWebView.CoreWebView2.WebMessageReceived += (_, args) =>
+        try
         {
-            var icao = args.TryGetWebMessageAsString();
-            if (!string.IsNullOrWhiteSpace(icao))
-                StationSelected?.Invoke(icao);
+            // All WebView2 controls in the process must share one CoreWebView2Environment instance.
+            // WebView2EnvironmentService creates it once (pointed at %LocalAppData%\METARLookup\WebView2)
+            // and returns the same object on every subsequent call.
+            await MapWebView.EnsureCoreWebView2Async(await WebView2EnvironmentService.GetAsync());
+
+            // Map the virtual hostname to the temp directory so the WebView can load map.html via HTTPS.
+            MapWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                VirtualHostName, _tempMapDir, CoreWebView2HostResourceAccessKind.Allow);
+
+            // When JS calls window.chrome.webview.postMessage(icao), raise StationSelected.
+            MapWebView.CoreWebView2.WebMessageReceived += (_, args) =>
+            {
+                var icao = args.TryGetWebMessageAsString();
+                if (!string.IsNullOrWhiteSpace(icao))
+                    StationSelected?.Invoke(icao);
+            };
+
+            // Render with whatever airport was requested before initialisation completed.
+            NavigateMap(BuildMapHtml(_pendingLat, _pendingLon, _pendingNearby, _pendingRadarUrl, _pendingPrimaryIcao));
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                MapWebView.Visibility = Visibility.Collapsed;
+                MapErrorPanel.Visibility = Visibility.Visible;
+                MapErrorText.Text = DescribeWebView2Error(ex);
+            }
+            catch { /* innermost safety net — swallow so we never crash the app from here */ }
+        }
+    }
+
+    private static string DescribeWebView2Error(Exception ex)
+    {
+        var cause = unchecked((uint)ex.HResult) switch
+        {
+            0x80070005 => "Access was denied to the map's data folder. Try running the app as administrator.",
+            0x80070002 => "The WebView2 Runtime could not be found on this machine.",
+            0x80070003 => "The map's data folder path could not be found.",
+            0x80070570 => "The WebView2 user data folder appears to be corrupted.",
+            0x8007007E => "A required WebView2 component (DLL) is missing.",
+            0x800700B7 => "A WebView2 profile conflict was detected — another instance may be running.",
+            0x8000FFFF => "An unexpected internal error occurred in the WebView2 component.",
+            _          => null
         };
 
-        // Render with whatever airport was requested before initialisation completed.
-        NavigateMap(BuildMapHtml(_pendingLat, _pendingLon, _pendingNearby, _pendingRadarUrl, _pendingPrimaryIcao));
+        var lines = new System.Text.StringBuilder();
+        lines.AppendLine(cause ?? $"The map component failed to initialize.");
+        lines.AppendLine();
+
+        if (cause == null || unchecked((uint)ex.HResult) == 0x80070002)
+            lines.AppendLine("• Try reinstalling the WebView2 Runtime from Microsoft (microsoft.com/edge/webview2)");
+
+        if (unchecked((uint)ex.HResult) == 0x80070570)
+        {
+            var dataFolder = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "METARLookup", "WebView2");
+            lines.AppendLine($"• Try deleting the folder: {dataFolder}");
+        }
+
+        lines.AppendLine("• Use the 'Report Bug' button to send a report if the problem persists.");
+        lines.AppendLine();
+        lines.Append($"Error code: 0x{ex.HResult:X8}");
+
+        return lines.ToString();
     }
 
     /// <summary>

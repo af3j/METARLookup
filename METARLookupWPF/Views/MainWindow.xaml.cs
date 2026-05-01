@@ -17,16 +17,18 @@ public partial class MainWindow : Window
 {
     private readonly MainViewModel _vm;
     private readonly IUserSettingsService _settingsService;
+    private readonly CrashReportService _crashReportService;
 
     /// <summary>
-    /// Constructor receives the view-model and settings service via dependency injection.
+    /// Constructor receives the view-model and services via dependency injection.
     /// Sets DataContext so all XAML bindings resolve against MainViewModel.
     /// </summary>
-    public MainWindow(MainViewModel vm, IUserSettingsService settingsService)
+    public MainWindow(MainViewModel vm, IUserSettingsService settingsService, CrashReportService crashReportService)
     {
         InitializeComponent();
         _vm = vm;
         _settingsService = settingsService;
+        _crashReportService = crashReportService;
         DataContext = vm;
 
         // Restore the persisted theme on startup. Unsubscribe/resubscribe around the
@@ -115,6 +117,22 @@ public partial class MainWindow : Window
         dlg.ShowDialog();
     }
 
+    /// <summary>Opens the bug report dialog so the user can send a manual report.</summary>
+    private void ReportBug_Click(object sender, RoutedEventArgs e)
+    {
+        //#if DEBUG
+        //        // Capture a real exception so the Sentry test event includes a stack trace.
+        //        // Remove this block once Sentry integration is verified.
+        //        Exception? testEx = null;
+        //        try { throw new InvalidOperationException("Sentry integration test — deliberate test exception."); }
+        //        catch (Exception ex) { testEx = ex; }
+        //        var dlg = new CrashReportWindow(_crashReportService, testEx, CrashReportMode.Manual) { Owner = this };
+        //#else
+                var dlg = new CrashReportWindow(_crashReportService, null, CrashReportMode.Manual) { Owner = this };
+        //#endif
+        dlg.ShowDialog();
+    }
+
     /// <summary>Applies the ModernWpf application theme immediately when the toggle is switched and persists the choice.</summary>
     private async void ThemeSwitch_Toggled(object sender, RoutedEventArgs e)
     {
@@ -137,13 +155,19 @@ public partial class MainWindow : Window
     /// (the expensive metafile download happens only once per ICAO thanks to caching).
     /// Does nothing if no airport has been looked up yet.
     /// </summary>
+    private static readonly string[] TabNames = ["METAR", "TAF", "Map", "Airport Charts", "SIGMETs", "Calculators"];
+
     private async void MainTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        var idx = MainTabs.SelectedIndex;
+        var tabName = idx >= 0 && idx < TabNames.Length ? TabNames[idx] : $"Tab {idx}";
+        ActivityLog.Record($"Opened {tabName} tab" + (string.IsNullOrEmpty(_vm.CurrentIcao) ? "" : $" for {_vm.CurrentIcao}"));
+
         if (!string.IsNullOrEmpty(_vm.CurrentIcao))
         {
-            if (MainTabs.SelectedIndex == 2)
+            if (idx == 2)
                 await MapViewControl.ShowAirportAsync(_vm.CurrentLat, _vm.CurrentLon, _vm.NearbyMetars, _vm.CurrentIcao);
-            else if (MainTabs.SelectedIndex == 3)
+            else if (idx == 3)
                 await _vm.ChartsVm.LoadAsync(_vm.CurrentIcao);
         }
     }

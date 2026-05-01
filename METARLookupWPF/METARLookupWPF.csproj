@@ -1,13 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Sentry: disable all sentry-cli build tasks (symbol/source upload not needed).
+         The sentry-cli-Windows-*.exe binaries are still extracted to the NuGet cache
+         by package restore. If Bitdefender flags them, add an exclusion for:
+           %USERPROFILE%\.nuget\packages\sentry\
+         in Bitdefender › Settings › Exclusions › Processes / Folders. -->
+    <SentryUploadSymbols>false</SentryUploadSymbols>
+    <SentryUploadSources>false</SentryUploadSources>
+    <SentrySetCommits>false</SentrySetCommits>
+    <SentryCreateRelease>false</SentryCreateRelease>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <Version>2.1.0</Version>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
     <Platforms>AnyCPU;x64</Platforms>
+    <FileVersion>2.1.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +38,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3856.49" />
     <PackageReference Include="ModernWpfUI" Version="0.9.6" />
+    <PackageReference Include="Sentry" Version="5.*" />
   </ItemGroup>
 
 </Project>

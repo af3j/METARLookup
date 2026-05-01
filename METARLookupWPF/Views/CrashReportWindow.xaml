@@ -1,0 +1,81 @@
+<Window x:Class="METARLookupWPF.Views.CrashReportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="Application Error" Width="620" Height="540"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip"
+        MinWidth="480" MinHeight="420">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Heading -->
+        <TextBlock x:Name="HeadingText" Grid.Row="0"
+                   FontSize="16" FontWeight="SemiBold"
+                   TextWrapping="Wrap" Margin="0,0,0,8"/>
+
+        <!-- Subtext -->
+        <TextBlock x:Name="SubText" Grid.Row="1"
+                   TextWrapping="Wrap" Opacity="0.7"
+                   FontSize="13" Margin="0,0,0,16"/>
+
+        <!-- User description -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <TextBlock Text="What were you doing when this happened? (optional)"
+                       FontSize="12" Margin="0,0,0,4" Opacity="0.8"/>
+            <TextBox x:Name="UserDescriptionBox"
+                     Height="64" TextWrapping="Wrap"
+                     AcceptsReturn="True"
+                     VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+
+        <!-- Diagnostic text preview -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,12">
+            <TextBlock Text="Details that will be included in the report:"
+                       FontSize="12" Margin="0,0,0,4" Opacity="0.8"/>
+            <TextBox x:Name="DiagnosticTextBox"
+                     IsReadOnly="True"
+                     FontFamily="Consolas" FontSize="11"
+                     TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Disabled"
+                     Height="180"/>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="OpenLogFolderButton" Grid.Column="0"
+                    Visibility="Collapsed"
+                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Background="Transparent" BorderThickness="0"
+                    Padding="0" Cursor="Hand"
+                    Click="OpenLogFolder_Click">
+                <TextBlock Text="📂 Open log folder"
+                           FontSize="11" TextDecorations="Underline"
+                           Opacity="0.6"/>
+            </Button>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button x:Name="CloseButton" Content="Cancel"
+                        Width="100" Margin="0,0,10,0"
+                        Click="Close_Click"/>
+                <Button x:Name="SendButton"
+                        Content="Send Report"
+                        Width="140"
+                        Style="{DynamicResource AccentButtonStyle}"
+                        Click="SendReport_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

@@ -5,5 +5,16 @@
 
     <Grid>
         <wv2:WebView2 x:Name="MapWebView" Margin="0"/>
+
+        <!-- Shown instead of the map when WebView2 fails to initialize -->
+        <Border x:Name="MapErrorPanel" Visibility="Collapsed"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Padding="28,20" CornerRadius="8" MaxWidth="440"
+                Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+            <StackPanel>
+                <TextBlock Text="Map Unavailable" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                <TextBlock x:Name="MapErrorText" TextWrapping="Wrap" Opacity="0.8" LineHeight="20"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
