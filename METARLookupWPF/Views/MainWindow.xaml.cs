@@ -120,16 +120,7 @@ public partial class MainWindow : Window
     /// <summary>Opens the bug report dialog so the user can send a manual report.</summary>
     private void ReportBug_Click(object sender, RoutedEventArgs e)
     {
-        //#if DEBUG
-        //        // Capture a real exception so the Sentry test event includes a stack trace.
-        //        // Remove this block once Sentry integration is verified.
-        //        Exception? testEx = null;
-        //        try { throw new InvalidOperationException("Sentry integration test — deliberate test exception."); }
-        //        catch (Exception ex) { testEx = ex; }
-        //        var dlg = new CrashReportWindow(_crashReportService, testEx, CrashReportMode.Manual) { Owner = this };
-        //#else
-                var dlg = new CrashReportWindow(_crashReportService, null, CrashReportMode.Manual) { Owner = this };
-        //#endif
+        var dlg = new CrashReportWindow(_crashReportService, null, CrashReportMode.Manual) { Owner = this };
         dlg.ShowDialog();
     }
 
