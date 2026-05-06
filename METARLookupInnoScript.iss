@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "METAR Lookup"
-#define MyAppVersion "v2.1"
+#define MyAppVersion "v2.1.1"
 #define MyAppPublisher "Farrand Tech Services"
 #define MyAppURL "https://www.farrandtech.com"
 #define MyAppExeName "METARLookup.exe"

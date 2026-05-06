@@ -1,15 +1,19 @@
-METAR LOOKUP  -  Version 2.1
+METAR LOOKUP
+Version 2.1.1
+
 SOFTWARE LICENSE AGREEMENT
 
-Copyright (c) 2026 Farrand Tech Services. All rights reserved.
+Copyright (c) 2026 Farrand Tech Services  -  All rights reserved.
 
-----------------------------------------------------------------------
-1.  MIT LICENSE (OPEN SOURCE)
-----------------------------------------------------------------------
+========================================================================
+1.  MIT License (Open Source)
+========================================================================
 
-METAR Lookup is released under the MIT License.
+METAR Lookup is released under the MIT License. The full license text
+is reproduced below.
 
 MIT License
+
 Copyright (c) 2026 Farrand Tech Services
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -20,8 +24,8 @@ distribute, sublicense, and/or sell copies of the Software, and to
 permit persons to whom the Software is furnished to do so, subject to
 the following conditions:
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
@@ -31,11 +35,11 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-----------------------------------------------------------------------
-2.  AVIATION SAFETY DISCLAIMER
-----------------------------------------------------------------------
+========================================================================
+2.  Aviation Safety Disclaimer
+========================================================================
 
-*** WARNING: NOT FOR OPERATIONAL FLIGHT PLANNING ***
+*** NOT FOR OPERATIONAL FLIGHT PLANNING ***
 
 METAR Lookup is provided for informational and educational purposes
 only. The data displayed in this application is retrieved from public
@@ -50,76 +54,77 @@ information for:
   - Any safety-critical aviation operation
   - Emergency or search-and-rescue planning
 
-Always obtain an official weather briefing from a qualified source
-such as 1800wxbrief.com, ForeFlight, or a certified flight service
-station before any flight.
+Always obtain an official weather briefing from a qualified source such
+as 1800wxbrief.com, ForeFlight, or a certified flight service station
+before any flight.
 
-----------------------------------------------------------------------
-3.  DATA SOURCES & THIRD-PARTY SERVICES
-----------------------------------------------------------------------
+========================================================================
+3.  Data Sources & Third-Party Services
+========================================================================
 
-METAR Lookup retrieves data from the following external services,
-each operated independently under its own terms of use.
+METAR Lookup retrieves data from the following external services. These
+services are operated independently and subject to their own terms of
+use.
 
-  aviationweather.gov (NOAA/NWS)
-      METAR, TAF, SIGMET, AIRMET, and nearby station data
+  Service                          Purpose
+  -------------------------------  ------------------------------------
+  aviationweather.gov (NOAA/NWS)  METAR, TAF, SIGMET, AIRMET, and
+                                   nearby station data
+  aeronav.faa.gov (FAA AeroNav)   Airport charts (d-TPP Terminal
+                                   Procedures Publication)
+  airport-data.com                 Airport coordinates and supplemental
+                                   metadata
+  datis.clowd.io                   D-ATIS (Digital Automatic Terminal
+                                   Information Service) broadcasts
+  rainviewer.com                   Radar and precipitation overlay tiles
+  cartocdn.com (CartoDB)           Map tile layers (Voyager light /
+                                   Dark Matter dark)
+  leafletjs.com                    Open-source interactive map library
+                                   (Leaflet 1.9.4)
 
-  aeronav.faa.gov (FAA AeroNav)
-      Airport charts (d-TPP Terminal Procedures Publication)
+========================================================================
+4.  Open-Source Component Attributions
+========================================================================
 
-  airport-data.com
-      Airport coordinates and supplemental metadata
+METAR Lookup includes the following open-source libraries, each subject
+to its own license:
 
-  rainviewer.com
-      Radar and precipitation overlay tiles
+  Component                                  Version    License
+  -----------------------------------------  ---------  -----------
+  CommunityToolkit.Mvvm                      8.4.2      MIT
+  Microsoft.Extensions.DependencyInjection   10.0.5     MIT
+  Microsoft.Web.WebView2                     1.0.3856.49  BSD-style
+  ModernWpfUI                                0.9.6      MIT
+  Leaflet.js                                 1.9.4      BSD-2-Clause
+  Sentry                                     5.x        MIT
 
-  cartocdn.com (CartoDB)
-      Map tile layers (Voyager light / Dark Matter dark themes)
+Full license texts for the above components are available in their
+respective repositories on GitHub.
 
-  leafletjs.com
-      Open-source interactive map library (Leaflet 1.9.4)
-
-----------------------------------------------------------------------
-4.  OPEN-SOURCE COMPONENT ATTRIBUTIONS
-----------------------------------------------------------------------
-
-The following open-source libraries are included in METAR Lookup,
-each subject to its own license:
-
-  CommunityToolkit.Mvvm  8.4.2
-      MIT License - github.com/microsoft/CommunityToolkit
-
-  Microsoft.Extensions.DependencyInjection  10.0.5
-      MIT License - github.com/dotnet/runtime
-
-  Microsoft.Web.WebView2  1.0.3856.49
-      BSD-style License - github.com/microsoft/webview2
-
-  ModernWpfUI  0.9.6
-      MIT License - github.com/Kinnara/ModernWpf
-
-  Leaflet.js  1.9.4
-      BSD 2-Clause License - github.com/Leaflet/Leaflet
-
-Full license texts are available in each component's GitHub
-repository.
-
-----------------------------------------------------------------------
-5.  PRIVACY
-----------------------------------------------------------------------
+========================================================================
+5.  Privacy
+========================================================================
 
 METAR Lookup does not collect, store, or transmit any personal data.
-All lookups are made directly from your machine to the third-party
-data sources listed in Section 3.
+All lookups are made directly from the user's machine to the
+third-party data sources listed in Section 3.
 
-The following data is stored locally on your device only:
+When a crash occurs, the application displays a Crash Report dialog.
+Only if the user explicitly clicks Send Report will a crash report
+(containing exception details and a brief activity log) be submitted
+to Sentry (sentry.io). No report is sent automatically. The activity
+log contains only recent in-app navigation actions and no personal
+information.
+
+The application stores only the following data locally on the user's
+device:
 
   - Favorite airports (ICAO codes and last-seen flight categories)
   - Dark/light theme preference
 
-----------------------------------------------------------------------
-6.  LIMITATION OF LIABILITY
-----------------------------------------------------------------------
+========================================================================
+6.  Limitation of Liability
+========================================================================
 
 TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL
 THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -129,8 +134,8 @@ OF USE, DATA, OR PROFITS; OR PERSONAL INJURY OR DEATH) ARISING FROM
 THE USE OF OR INABILITY TO USE THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-----------------------------------------------------------------------
-METAR Lookup v2.1  |  Copyright (c) 2026 Farrand Tech Services
-MIT License  |  Data provided by aviationweather.gov
-NOT FOR OPERATIONAL FLIGHT PLANNING
-----------------------------------------------------------------------
+------------------------------------------------------------------------
+METAR Lookup v2.1.1  -  Copyright (c) 2026 Farrand Tech Services
+MIT License  -  Data provided by aviationweather.gov
+Not for operational flight planning.
+------------------------------------------------------------------------
