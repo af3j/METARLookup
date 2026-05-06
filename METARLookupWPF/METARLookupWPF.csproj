@@ -19,10 +19,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
-    <Version>2.1.0</Version>
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <Version>2.1.2</Version>
+    <AssemblyVersion>2.1.2</AssemblyVersion>
     <Platforms>AnyCPU;x64</Platforms>
-    <FileVersion>2.1.1.0</FileVersion>
+    <FileVersion>2.1.2</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

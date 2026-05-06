@@ -83,6 +83,9 @@ public partial class MapView : UserControl
             // and returns the same object on every subsequent call.
             await MapWebView.EnsureCoreWebView2Async(await WebView2EnvironmentService.GetAsync());
 
+            // Must exist before SetVirtualHostNameToFolderMapping is called — it does not create it.
+            Directory.CreateDirectory(_tempMapDir);
+
             // Map the virtual hostname to the temp directory so the WebView can load map.html via HTTPS.
             MapWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(
                 VirtualHostName, _tempMapDir, CoreWebView2HostResourceAccessKind.Allow);
