@@ -20,10 +20,10 @@ public class AvWeatherService(HttpClient http) : IAvWeatherService
     /// <inheritdoc/>
     public async Task<Metar?> GetMetarAsync(string icao, CancellationToken ct = default)
     {
-        // hoursBeforeNow=3 ensures we get a result even if the station is slightly late reporting.
-        // mostRecent=true keeps the response to a single observation.
+        // hours=3 ensures we get a result even if the station is slightly late reporting.
+        // The API returns observations most-recent-first, so FirstOrDefault below picks the latest.
         var results = await FetchMetarsXmlAsync(
-            $"https://aviationweather.gov/api/data/metar?ids={icao}&hoursBeforeNow=3&format=xml&mostRecent=true", ct);
+            $"https://aviationweather.gov/api/data/metar?ids={icao}&hours=3&format=xml", ct);
         return results.FirstOrDefault();
     }
 
@@ -39,7 +39,7 @@ public class AvWeatherService(HttpClient http) : IAvWeatherService
         // InvariantCulture ensures decimal separators are always '.' regardless of OS locale.
         string bbox = string.Format(CultureInfo.InvariantCulture, "{0},{1},{2},{3}", minLat, minLon, maxLat, maxLon);
         return await FetchMetarsXmlAsync(
-            $"https://aviationweather.gov/api/data/metar?bbox={bbox}&hours=2&format=xml&mostRecent=true", ct);
+            $"https://aviationweather.gov/api/data/metar?bbox={bbox}&hours=2&format=xml", ct);
     }
 
     /// <inheritdoc/>

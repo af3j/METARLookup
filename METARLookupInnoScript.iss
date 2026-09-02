@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "METAR Lookup"
-#define MyAppVersion "v2.1.2"
+#define MyAppVersion "v2.1.3"
 #define MyAppPublisher "Farrand Tech Services"
 #define MyAppURL "https://www.farrandtech.com"
 #define MyAppExeName "METARLookup.exe"
@@ -30,7 +30,7 @@ ArchitecturesAllowed=x64compatible
 ; the 64-bit view of the registry.
 ArchitecturesInstallIn64BitMode=x64compatible
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\af3j\source\repos\af3j\METARLookup\License.txt
+LicenseFile=C:\Users\af3j\source\repos\METARLookup\License.txt
 ;InfoAfterFile=C:\Users\af3j\source\repos\af3j\METARLookup\METAR_Lookup_User_Manual.pdf
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
@@ -46,8 +46,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\af3j\source\repos\af3j\METARLookup\METARLookupWPF\bin\Release\net10.0-windows\publish\win-x64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\af3j\source\repos\af3j\METARLookup\METARLookupWPF\bin\Release\net10.0-windows\publish\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\af3j\source\repos\METARLookup\METARLookupWPF\bin\Release\net10.0-windows\publish\win-x64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\af3j\source\repos\METARLookup\METARLookupWPF\bin\Release\net10.0-windows\publish\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

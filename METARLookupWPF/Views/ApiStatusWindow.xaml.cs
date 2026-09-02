@@ -22,7 +22,7 @@ public partial class ApiStatusWindow : Window
     public ObservableCollection<ApiEndpoint> Endpoints { get; } =
     [
         new() { Name = "Av. Weather Center — METAR / TAF / SIGMET",
-                Url  = "https://aviationweather.gov/api/data/metar?ids=KSEA&format=xml&mostRecent=true" },
+                Url  = "https://aviationweather.gov/api/data/metar?ids=KSEA&format=xml&hours=1" },
         new() { Name = "Av. Weather Center — Airport Info",
                 Url  = "https://aviationweather.gov/api/data/airport?ids=KSEA&format=json" },
         new() { Name = "Airport Data (airport-data.com)",
